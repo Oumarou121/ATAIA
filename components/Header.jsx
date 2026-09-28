@@ -1,0 +1,88 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { NAV_LINKS, PROJECTS, SITE } from "@/lib/data";
+
+export default function Header() {
+  const [solid, setSolid] = useState(false);
+  const [indicator, setIndicator] = useState(null); // ex. "03"
+  const [menu, setMenu] = useState(false);
+  const openBtn = useRef(null);
+
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 40);
+    onScroll();
+    document.addEventListener("scroll", onScroll, { passive: true });
+    return () => document.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Indicateur "03 / 06" pendant qu'on parcourt les projets
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const projs = document.querySelectorAll(".proj[data-idx]");
+    // une section est "courante" quand elle traverse la ligne médiane de l'écran
+    const pio = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && setIndicator(e.target.dataset.idx)),
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+    projs.forEach((s) => pio.observe(s));
+    const hideOn = ["intro", "villas-residences"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    const hio = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && setIndicator(null)),
+      { threshold: 0 }
+    );
+    hideOn.forEach((s) => hio.observe(s));
+    return () => { pio.disconnect(); hio.disconnect(); };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menu ? "hidden" : "";
+    const onKey = (e) => e.key === "Escape" && closeMenu();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menu]);
+
+  function closeMenu() {
+    setMenu(false);
+    openBtn.current?.focus();
+  }
+
+  return (
+    <>
+      <header id="hdr" className={solid ? "solid" : ""}>
+        <nav aria-label="Navigation principale">
+          <a className="brand" href="#top">{SITE.name}</a>
+          <span className="hdr-mid" hidden={!indicator} aria-hidden="true">
+            {indicator && `${indicator} / ${String(PROJECTS.length).padStart(2, "0")}`}
+          </span>
+          <div className="nlinks">
+            {NAV_LINKS.map((l) => (
+              <a key={l.href} href={l.href}>{l.label}</a>
+            ))}
+          </div>
+          <button
+            ref={openBtn}
+            className="burger"
+            aria-label="Ouvrir le menu"
+            aria-expanded={menu}
+            aria-controls="mnav"
+            onClick={() => setMenu(true)}
+          >
+            Menu
+          </button>
+        </nav>
+      </header>
+
+      <div className={`mnav${menu ? " open" : ""}`} id="mnav" role="dialog" aria-modal="true" aria-label="Navigation">
+        <div className="mnav-top">
+          <span>{SITE.name}</span>
+          <button onClick={closeMenu} aria-label="Fermer le menu">Fermer</button>
+        </div>
+        {NAV_LINKS.map((l) => (
+          <a key={l.href} href={l.href} onClick={closeMenu}>{l.label}</a>
+        ))}
+      </div>
+    </>
+  );
+}
