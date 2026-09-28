@@ -45,16 +45,18 @@ export default function VillasResidences() {
           aria-labelledby={`vr-tab-${t.key}`}
           hidden={tab !== t.key}
         >
-          {t.groups.map((g) => (
-            <div className="vr-card" key={g.slug}>
-              <div className="vr-card-imgs">
-                {Array.from({ length: g.n }, (_, i) => (
-                  <Zoomable key={i} bg={bg(g.slug, i)} cap={`${g.name} — photo ${i + 1}`} />
-                ))}
-              </div>
-              <p className="vr-name">{g.name}</p>
-            </div>
-          ))}
+          {t.groups.map((g) => {
+            const group = Array.from({ length: g.n }, (_, i) => ({
+              bg: bg(g.slug, i),
+              cap: `${g.name} — photo ${i + 1}`,
+            }));
+            return (
+              <Zoomable key={g.slug} bg={bg(g.slug, 0)} cap={group[0].cap} group={group} className="vr-card">
+                {g.n > 1 && <span className="vr-count">+{g.n - 1}</span>}
+                <p className="vr-name">{g.name}</p>
+              </Zoomable>
+            );
+          })}
         </div>
       ))}
     </section>
