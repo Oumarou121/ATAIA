@@ -122,21 +122,48 @@ function MosaicLayout({ p }) {
 function CompareLayout({ p }) {
   const [a, b, ...rest] = p.gallery;
   return (
-    <>
-      <Compare slug={p.slug} before={a} after={b} labels={p.compareLabels} ratio={p.compareRatio} position={p.compareFocus} />
-      {rest.length > 0 && (
-        <div className="cmp-more">
-          {rest.map((g, i) => (
-            <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 100vw, 50vw" cap={`${p.title} — vue ${i + 3}`} />
-          ))}
+    <div className="cmp-layout">
+      <Reveal className="cmp-meta">
+        <div className="meta">
+          <span className="idx">{p.n}</span>
+          <h2>{p.title}</h2>
+          <p className="loc"><span>{p.kicker}</span><span>{p.loc}</span></p>
+          <p className="desc">{p.desc}</p>
         </div>
-      )}
-      {p.details && (
-        <div className="p4-acc-wrap">
-          <Accordion title="Détails du projet" rows={p.details} />
-        </div>
-      )}
-    </>
+        {p.details && (
+          <div className="cmp-details">
+            <Accordion title="Détails du projet" rows={p.details} />
+          </div>
+        )}
+      </Reveal>
+      <div className="cmp-main">
+        <Compare
+          slug={p.slug}
+          before={a}
+          after={b}
+          labels={p.compareLabels}
+          icons={p.compareIcons}
+          alts={p.compareAlts}
+          align={p.compareAlign}
+          ratio={p.compareRatio}
+          position={p.compareFocus}
+          title={p.title}
+        />
+        {rest.length > 0 && (
+          <div className="cmp-more">
+            {rest.map((g, i) => {
+              const v = p.compareViews?.[i];
+              return (
+                <figure key={g} className="cmp-fig">
+                  <Zoomable src={img(p.slug, g)} sizes="(max-width: 900px) 100vw, 440px" cap={v?.alt || `${p.title} — vue ${i + 3}`} />
+                  {v?.cap && <figcaption>{v.cap}</figcaption>}
+                </figure>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -224,7 +251,7 @@ export default function ProjectSection({ p }) {
   const index = PROJECTS.findIndex((x) => x.key === p.key);
   return (
     <section className="proj" id={`project-${p.n}`} data-idx={p.n} aria-label={`Projet ${p.n}`}>
-      <ProjectHead p={p} />
+      {p.layout !== "compare" && <ProjectHead p={p} />}
       <Layout p={p} />
       <ProjectNav index={index} />
     </section>

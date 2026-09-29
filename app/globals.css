@@ -329,17 +329,47 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    IMAGE COMPARISON (avant/après)
    ========================================================= */
-.compare{position:relative;overflow:hidden;aspect-ratio:16/9;width:100%;touch-action:pan-y}
+.cmp-layout{display:grid;grid-template-columns:minmax(240px,300px) 1fr;column-gap:var(--gut);align-items:start}
+.cmp-meta{position:sticky;top:110px}
+.cmp-details{margin-top:clamp(20px,3vh,32px)}
+.cmp-main{min-width:0}
+/* Largeur plafonnée pour que la villa reste vue en entier : hauteur ≤ 85vh (ratio 5/4) */
+.cmp-wrap{width:min(100%,calc(85vh * 1.25));margin-inline:auto}
+.compare{position:relative;overflow:hidden;aspect-ratio:5/4;width:100%;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize}
 .compare .frame{position:absolute;inset:0}
 .compare .cmp-after{clip-path:inset(0 0 0 50%)}
-.compare .cmp-label{position:absolute;top:clamp(12px,1.4vw,18px);z-index:2;font-size:11.5px;letter-spacing:.06em;color:var(--ink);opacity:.75;text-transform:uppercase}
-.compare .cmp-before .cmp-label{left:clamp(12px,1.4vw,18px)}
-.compare .cmp-after .cmp-label{right:clamp(12px,1.4vw,18px)}
-.cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(240,237,229,.55);transform:translateX(-.5px);cursor:ew-resize;z-index:3}
-.cmp-handle::before{content:"";position:absolute;top:50%;left:50%;width:9px;height:9px;border-radius:50%;
-  background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 0 5px rgba(32,32,29,.55)}
-.cmp-handle::after{content:"";position:absolute;top:50%;left:50%;width:26px;height:26px;border:1px solid rgba(240,237,229,.35);
-  border-radius:50%;transform:translate(-50%,-50%)}
+
+/* Libellés : pastilles sombres floutées, le côté majoritaire est mis en valeur */
+.compare .cmp-label{position:absolute;top:clamp(12px,1.4vw,18px);z-index:2;display:inline-flex;align-items:center;gap:7px;
+  padding:7px 13px 7px 10px;border-radius:999px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);
+  background:rgba(32,32,29,.55);border:1px solid rgba(240,237,229,.14);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  opacity:.6;pointer-events:none;transition:opacity .35s ease,transform .35s ease,background-color .35s ease,border-color .35s ease}
+.compare .cmp-label.on{opacity:1;background:rgba(32,32,29,.8);border-color:rgba(183,164,126,.6)}
+.compare .cmp-label.gone{opacity:0;transform:scale(.94)}
+.compare .cmp-l{left:clamp(12px,1.4vw,18px)}
+.compare .cmp-r{right:clamp(12px,1.4vw,18px)}
+
+/* Poignée : trait net + pastille à deux flèches, zone de saisie de 44 px */
+.cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:44px;margin-left:-22px;cursor:ew-resize;z-index:3;touch-action:none}
+.cmp-handle::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:rgba(240,237,229,.88);box-shadow:0 0 0 1px rgba(32,32,29,.25)}
+.cmp-grip{position:absolute;top:50%;left:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--ink);background:rgba(32,32,29,.82);
+  border:1.5px solid rgba(240,237,229,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(0,0,0,.35);
+  transition:transform .25s ease,background-color .25s ease,color .25s ease}
+.cmp-handle:hover .cmp-grip,.compare.is-hinting .cmp-grip{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.cmp-handle:focus-visible{outline:none}
+.cmp-handle:focus-visible .cmp-grip{outline:2px solid var(--accent);outline-offset:3px;background:var(--accent);color:var(--bg)}
+
+/* Barre sous l'image : boutons Jour | Nuit + plein écran */
+.cmp-bar{margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.cmp-toggle{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px}
+.cmp-toggle button,.cmp-fs{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:8px 16px;border-radius:999px;
+  background:none;border:0;color:var(--sub);font:inherit;font-size:12.5px;letter-spacing:.04em;cursor:pointer;
+  transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+.cmp-toggle button:hover,.cmp-fs:hover{color:var(--ink)}
+.cmp-toggle button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.cmp-fs{border:1px solid var(--line)}
+.cmp-fs:hover{background:var(--surface);border-color:var(--accent-soft)}
 
 /* =========================================================
    3D VIEWER
@@ -459,8 +489,14 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    Comparateur (projet 06) + fiche « Détails » (projet 04)
    ========================================================= */
-.cmp-more{margin-top:clamp(20px,3vw,var(--gut));display:grid;grid-template-columns:1fr 1fr;gap:var(--gut)}
-.cmp-more .frame{aspect-ratio:4/3}
+.cmp-more{margin-top:clamp(24px,3.5vw,var(--gut));display:grid;grid-template-columns:1fr 1fr;gap:var(--gut)}
+.cmp-fig .frame{aspect-ratio:5/4;width:100%}
+.cmp-fig figcaption{margin-top:10px;font-size:12.5px;color:var(--sub);letter-spacing:.02em}
+@media (max-width:900px){
+  .cmp-layout{display:block}
+  .cmp-meta{position:static;margin-bottom:24px}
+  .cmp-wrap{width:100%}
+}
 .p4-acc-wrap{margin-top:clamp(32px,5vh,52px)}
 
 /* =========================================================
