@@ -365,9 +365,9 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .meta .desc{margin-top:12px;font-size:14.5px;line-height:1.6;color:var(--sub);max-width:42ch}
 
 .proj{scroll-margin-top:90px;padding:0 var(--pad-x) var(--gap)}
-#project-02{background:var(--bg-soft);padding-top:var(--gap)}
-/* Le projet 03 suit la bande claire du 02 : sans marge haute, son titre colle au bord de la bande */
-#project-03{padding-top:var(--gap)}
+/* Le 03 (Cité Alpha Djadi) est le projet sur bande claire ; le 04 lui succède : sans marge haute, son titre collerait au bord de la bande */
+#project-03{background:var(--bg-soft);padding-top:var(--gap)}
+#project-04{padding-top:var(--gap)}
 .proj-head{max-width:640px;margin-bottom:clamp(28px,4.5vh,52px);display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap}
 
 .proj-nav{margin-top:clamp(48px,7vh,88px);border-top:1px solid var(--line);padding-top:clamp(20px,3vh,32px);
