@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { pad } from "@/hooks/useSlider";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 const LightboxCtx = createContext({ open: () => {} });
 export const useLightbox = () => useContext(LightboxCtx);
@@ -15,12 +16,29 @@ export function LightboxProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const trigger = useRef(null);
   const closeBtn = useRef(null);
+  const overlay = useRef(null);
   const dragX = useRef(null);
 
-  const open = useCallback((el) => {
-    const nodes = Array.from(document.querySelectorAll("[data-zoom]"));
-    setItems(nodes.map((n) => ({ bg: n.dataset.bg, cap: n.dataset.cap || "" })));
-    setIdx(Math.max(0, nodes.indexOf(el)));
+  // `group` : liste explicite d'images (ex. les photos d'une villa). Sinon on
+  // parcourt les images visibles de la page, sans les doublons ni celles
+  // d'un onglet masqué.
+  const open = useCallback((el, group) => {
+    let list;
+    let start = 0;
+    if (group?.length) {
+      list = group;
+    } else {
+      const seen = new Set();
+      list = [];
+      document.querySelectorAll("[data-zoom]").forEach((n) => {
+        if (n.closest("[hidden]") || seen.has(n.dataset.bg)) return;
+        seen.add(n.dataset.bg);
+        list.push({ bg: n.dataset.bg, cap: n.dataset.cap || "" });
+      });
+      start = Math.max(0, list.findIndex((it) => it.bg === el.dataset.bg));
+    }
+    setItems(list);
+    setIdx(start);
     trigger.current = el;
     setIsOpen(true);
   }, []);
@@ -50,12 +68,16 @@ export function LightboxProvider({ children }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, close, go]);
 
+  useFocusTrap(overlay, isOpen);
+
   const cur = items[idx];
 
   return (
     <LightboxCtx.Provider value={{ open }}>
       {children}
       <div
+        ref={overlay}
+        inert={!isOpen}
         className={`lightbox${isOpen ? " open" : ""}`}
         role="dialog"
         aria-modal="true"
@@ -88,20 +110,20 @@ export function LightboxProvider({ children }) {
 }
 
 /** Image cliquable qui s'ouvre dans la visionneuse. */
-export function Zoomable({ bg, cap, className = "", children, ...rest }) {
+export function Zoomable({ bg, cap, group, className = "", children, ...rest }) {
   const { open } = useLightbox();
   return (
     <div
       className={`frame real zoomable ${className} ${bg}`.replace(/\s+/g, " ").trim()}
-      data-zoom
+      data-zoom={group ? undefined : "true"}
       data-bg={bg}
       data-cap={cap}
       tabIndex={0}
       role="button"
       aria-label={cap ? `Agrandir : ${cap}` : "Agrandir l'image"}
-      onClick={(e) => open(e.currentTarget)}
+      onClick={(e) => open(e.currentTarget, group)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e.currentTarget); }
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e.currentTarget, group); }
       }}
       {...rest}
     >

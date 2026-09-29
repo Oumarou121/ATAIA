@@ -120,7 +120,14 @@ export function useSlider({
     onClickCapture,
   };
 
-  return { index, count, goTo, next, prev, rootProps, trackStyle };
+  // Les diapositives hors champ ne doivent ni prendre le focus (ce qui décalerait
+  // le conteneur) ni être lues par les lecteurs d'écran.
+  const slideProps = (i) => ({
+    tabIndex: i === index ? 0 : -1,
+    "aria-hidden": i === index ? undefined : true,
+  });
+
+  return { index, count, goTo, next, prev, rootProps, trackStyle, slideProps };
 }
 
 export const pad = (n) => (n < 10 ? "0" + n : "" + n);

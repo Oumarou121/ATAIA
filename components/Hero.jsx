@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
 import { PROJECTS, bg } from "@/lib/data";
 import { pad, useSlider } from "@/hooks/useSlider";
+import { useAutoplay } from "@/hooks/useAutoplay";
 import Magnetic from "./Magnetic";
+import AutoplayToggle from "./AutoplayToggle";
 
 export default function Hero() {
-  const [playing, setPlaying] = useState(true);
+  const { playing, canAutoplay, toggle } = useAutoplay();
   const s = useSlider({ count: PROJECTS.length, auto: 6500, playing });
   const p = PROJECTS[s.index];
 
@@ -39,9 +40,7 @@ export default function Hero() {
           </div>
           <div className="hero-ctrl-row">
             <div className="hero-bar"><span style={{ width: `${((s.index + 1) / s.count) * 100}%` }} /></div>
-            <button className="hero-auto" aria-pressed={!playing} onClick={() => setPlaying((v) => !v)}>
-              {playing ? "Pause" : "Lecture"}
-            </button>
+            <AutoplayToggle playing={playing} canAutoplay={canAutoplay} onToggle={toggle} />
           </div>
           <a className="hero-down" href="#projects">Explorer les projets ↓</a>
         </div>

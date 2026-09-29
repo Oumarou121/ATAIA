@@ -68,7 +68,7 @@ function CarouselLayout({ p }) {
       <div className="p1-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
-            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — photo ${i + 1}`} />
+            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — photo ${i + 1}`} {...s.slideProps(i)} />
           ))}
         </div>
       </div>
@@ -87,7 +87,7 @@ function VerticalLayout({ p }) {
       <div className="p2-slider slider vertical" role="region" aria-roledescription="carrousel vertical" aria-label="Séquence verticale du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
-            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} />
+            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} {...s.slideProps(i)} />
           ))}
         </div>
       </div>
@@ -179,7 +179,7 @@ function GalleryLayout({ p }) {
         <div className="p5-main slider" role="region" aria-roledescription="carrousel" aria-label="Photographie principale" {...s.rootProps}>
           <div className="sl-track" style={s.trackStyle}>
             {p.gallery.map((g, i) => (
-              <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — principale ${i + 1}`} />
+              <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — principale ${i + 1}`} {...s.slideProps(i)} />
             ))}
           </div>
         </div>

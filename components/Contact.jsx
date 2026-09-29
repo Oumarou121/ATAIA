@@ -4,9 +4,12 @@ import { CONTACT_SLIDES, bg } from "@/lib/data";
 import { useSlider } from "@/hooks/useSlider";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
+import AutoplayToggle from "./AutoplayToggle";
+import { useAutoplay } from "@/hooks/useAutoplay";
 
 export default function Contact() {
-  const s = useSlider({ count: CONTACT_SLIDES.length, auto: 4600 });
+  const { playing, canAutoplay, toggle } = useAutoplay();
+  const s = useSlider({ count: CONTACT_SLIDES.length, auto: 4600, playing });
   const [status, setStatus] = useState({ state: "idle", msg: "" });
 
   async function onSubmit(e) {
@@ -34,10 +37,13 @@ export default function Contact() {
       <Reveal className="ct-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies de conclusion" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {CONTACT_SLIDES.map((c, i) => (
-            <Zoomable key={i} bg={bg(c.slug, c.i)} cap={c.cap} />
+            <Zoomable key={i} bg={bg(c.slug, c.i)} cap={c.cap} {...s.slideProps(i)} />
           ))}
         </div>
       </Reveal>
+      <div className="ct-bar">
+        <AutoplayToggle playing={playing} canAutoplay={canAutoplay} onToggle={toggle} />
+      </div>
 
       <Reveal className="contact-row">
         <h2>Parlons de votre prochain projet.</h2>

@@ -1,12 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { NAV_LINKS, PROJECTS, SITE } from "@/lib/data";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 export default function Header() {
   const [solid, setSolid] = useState(false);
   const [indicator, setIndicator] = useState(null); // ex. "03"
   const [menu, setMenu] = useState(false);
   const openBtn = useRef(null);
+  const closeBtn = useRef(null);
+  const mnav = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 40);
@@ -43,6 +46,12 @@ export default function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menu]);
 
+  useEffect(() => {
+    if (menu) closeBtn.current?.focus();
+  }, [menu]);
+
+  useFocusTrap(mnav, menu);
+
   function closeMenu() {
     setMenu(false);
     openBtn.current?.focus();
@@ -74,10 +83,10 @@ export default function Header() {
         </nav>
       </header>
 
-      <div className={`mnav${menu ? " open" : ""}`} id="mnav" role="dialog" aria-modal="true" aria-label="Navigation">
+      <div ref={mnav} inert={!menu} className={`mnav${menu ? " open" : ""}`} id="mnav" role="dialog" aria-modal="true" aria-label="Navigation">
         <div className="mnav-top">
           <span>{SITE.name}</span>
-          <button onClick={closeMenu} aria-label="Fermer le menu">Fermer</button>
+          <button ref={closeBtn} onClick={closeMenu} aria-label="Fermer le menu">Fermer</button>
         </div>
         {NAV_LINKS.map((l) => (
           <a key={l.href} href={l.href} onClick={closeMenu}>{l.label}</a>

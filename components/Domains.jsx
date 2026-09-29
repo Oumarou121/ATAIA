@@ -1,33 +1,25 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { DOMAINS, bg } from "@/lib/data";
 
 export default function Domains() {
   const [active, setActive] = useState(0);
-  const btns = useRef([]);
-  const go = (i) => {
-    const n = (i + DOMAINS.length) % DOMAINS.length;
-    setActive(n);
-    btns.current[n]?.focus();
-  };
 
+  // La sélection ne change que l'image d'illustration (décorative) : ce sont donc
+  // de simples boutons dans une liste, pas un système d'onglets. Le focus clavier
+  // active aussi l'image, comme pour l'index des projets.
   return (
     <section className="domains" id="domains" aria-label="Domaines d'intervention">
       <div className="dom-row">
-        <ul className="dom-list" role="tablist" aria-orientation="vertical" aria-label="Domaines">
+        <ul className="dom-list">
           {DOMAINS.map((d, i) => (
             <li key={d.title}>
               <button
-                ref={(el) => (btns.current[i] = el)}
+                type="button"
                 className={`dom-btn${active === i ? " active" : ""}`}
-                role="tab"
-                aria-selected={active === i}
-                tabIndex={active === i ? 0 : -1}
+                aria-current={active === i ? "true" : undefined}
                 onClick={() => setActive(i)}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowDown") { e.preventDefault(); go(i + 1); }
-                  else if (e.key === "ArrowUp") { e.preventDefault(); go(i - 1); }
-                }}
+                onFocus={() => setActive(i)}
               >
                 <span className="dt">{d.title}</span>
                 <span className="dd">{d.desc}</span>
