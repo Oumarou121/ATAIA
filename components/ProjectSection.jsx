@@ -56,6 +56,102 @@ function ProjectNav({ index }) {
 
 /* ---------- mises en page ---------- */
 
+/* ---------- Projet 01 : étude de cas ---------- */
+
+function Fig({ p, i, cls, ratio, sizes }) {
+  const v = p.views[i];
+  return (
+    <figure className={`bc-fig ${cls}`} style={ratio ? { "--r": ratio } : undefined}>
+      <Reveal img>
+        <Zoomable src={img(p.slug, i)} sizes={sizes} cap={v.cap} position={v.pos}>
+          <span className="bc-tag">{v.cap}</span>
+        </Zoomable>
+      </Reveal>
+    </figure>
+  );
+}
+
+function Chapter({ id, n, c, children }) {
+  return (
+    <section className="bc-ch" id={id} aria-labelledby={`${id}-t`}>
+      <Reveal className="bc-ch-head">
+        <span className="n">{pad(n)}</span>
+        <h3 id={`${id}-t`}>{c.label}</h3>
+        <p>{c.note}</p>
+      </Reveal>
+      {children}
+    </section>
+  );
+}
+
+function FeatureLayout({ p }) {
+  const [c1, c2, c3] = p.chapters;
+  const cmp = p.compare;
+  const half = "(max-width: 820px) 100vw, 50vw";
+  return (
+    <>
+      <div className="bc-head">
+        <Reveal className="bc-head-main">
+          <p className="bc-kicker"><span className="bc-idx">{p.n}</span><span>{p.kicker}</span></p>
+          <h2 className="bc-title">{p.title}</h2>
+        </Reveal>
+        <Reveal className="bc-head-side d1">
+          <p className="bc-desc">{p.desc}</p>
+          <ol className="bc-toc" aria-label="Chapitres du projet">
+            {p.chapters.map((c, i) => (
+              <li key={c.label}>
+                <a href={`#bc-${i + 1}`}><span className="n">{pad(i + 1)}</span>{c.label}<span className="arr" aria-hidden="true">↓</span></a>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+        <Reveal as="dl" className="bc-facts d2">
+          {p.facts.map(([k, v]) => (
+            <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+          ))}
+        </Reveal>
+      </div>
+
+      <Chapter id="bc-1" n={1} c={c1}>
+        <div className="bc-stage">
+          <Compare
+            slug={p.slug}
+            before={cmp.before}
+            after={cmp.after}
+            labels={cmp.labels}
+            icons={cmp.icons}
+            alts={cmp.alts}
+            ratio={cmp.ratio}
+            title={p.title}
+          />
+        </div>
+        <div className="bc-grid bc-duo">
+          <Fig p={p} i={2} cls="bc-a" ratio="16/10" sizes={half} />
+          <Fig p={p} i={7} cls="bc-b" ratio="16/10" sizes={half} />
+        </div>
+      </Chapter>
+
+      <Chapter id="bc-2" n={2} c={c2}>
+        <div className="bc-grid bc-site">
+          <Fig p={p} i={0} cls="bc-a" ratio="1435/1096" sizes="(max-width: 820px) 100vw, 60vw" />
+          <Fig p={p} i={3} cls="bc-b" sizes="(max-width: 820px) 100vw, 40vw" />
+          <Fig p={p} i={4} cls="bc-c" sizes="(max-width: 820px) 100vw, 40vw" />
+        </div>
+      </Chapter>
+
+      <Chapter id="bc-3" n={3} c={c3}>
+        <div className="bc-grid bc-checker">
+          <Fig p={p} i={5} cls="bc-a" ratio="3/2" sizes="(max-width: 820px) 100vw, 42vw" />
+          <Fig p={p} i={10} cls="bc-b" ratio="16/10" sizes="(max-width: 820px) 100vw, 58vw" />
+          <Fig p={p} i={8} cls="bc-c" ratio="16/10" sizes="(max-width: 820px) 100vw, 58vw" />
+          <Fig p={p} i={9} cls="bc-d" ratio="3/2" sizes="(max-width: 820px) 100vw, 42vw" />
+        </div>
+      </Chapter>
+    </>
+  );
+}
+
+
 function CarouselLayout({ p }) {
   const s = useSlider({ count: p.gallery.length });
   return (
@@ -264,6 +360,7 @@ function GridLayout({ p }) {
 }
 
 const LAYOUTS = {
+  feature: FeatureLayout,
   carousel: CarouselLayout,
   chapters: ChaptersLayout,
   mosaic: MosaicLayout,
@@ -277,7 +374,7 @@ export default function ProjectSection({ p }) {
   const index = PROJECTS.findIndex((x) => x.key === p.key);
   return (
     <section className="proj" id={`project-${p.n}`} data-idx={p.n} aria-label={`Projet ${p.n}`}>
-      {p.layout !== "compare" && p.layout !== "chapters" && <ProjectHead p={p} />}
+      {p.layout !== "compare" && p.layout !== "chapters" && p.layout !== "feature" && <ProjectHead p={p} />}
       <Layout p={p} />
       <ProjectNav index={index} />
     </section>

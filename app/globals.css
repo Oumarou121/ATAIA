@@ -294,6 +294,8 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 
 .proj{scroll-margin-top:90px;padding:0 var(--pad-x) var(--gap)}
 #project-02{background:var(--bg-soft);padding-top:var(--gap)}
+/* Le projet 03 suit la bande claire du 02 : sans marge haute, son titre colle au bord de la bande */
+#project-03{padding-top:var(--gap)}
 .proj-head{max-width:640px;margin-bottom:clamp(28px,4.5vh,52px);display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap}
 
 .proj-nav{margin-top:clamp(48px,7vh,88px);border-top:1px solid var(--line);padding-top:clamp(20px,3vh,32px);
@@ -649,6 +651,83 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
 .lb-nav button{background:none;border:0;font:400 13px var(--font-inter),sans-serif;color:var(--sub);cursor:pointer;padding:4px}
 .lb-nav button:hover{color:var(--ink)}
 .lb-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* =========================================================
+   PROJET 01 — étude de cas (BCEAO Tahoua)
+   Ouverture typographique, comparateur jour/nuit pleine largeur,
+   puis trois chapitres à la composition asymétrique.
+   ========================================================= */
+#project-01{padding-top:clamp(24px,5vh,56px)}
+.bc-head{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gut);row-gap:clamp(28px,4.5vh,48px);align-items:end;margin-bottom:clamp(44px,8vh,96px)}
+.bc-head-main{grid-column:1 / span 8}
+.bc-head-side{grid-column:9 / span 4}
+.bc-kicker{display:flex;align-items:center;gap:14px;margin-bottom:clamp(16px,2.6vh,28px);font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--sub)}
+.bc-idx{color:var(--accent);font-variant-numeric:tabular-nums}
+.bc-kicker span + span::before{content:"";display:inline-block;width:28px;height:1px;margin-right:14px;background:var(--line);vertical-align:middle}
+.bc-title{font-size:clamp(38px,6vw,84px);line-height:1;letter-spacing:-.022em}
+.bc-desc{font-size:15px;line-height:1.65;color:var(--sub);max-width:40ch}
+.bc-toc{list-style:none;margin-top:clamp(20px,3vh,32px);border-top:1px solid var(--line)}
+.bc-toc a{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--sub);transition:color .3s ease,padding-left .3s ease}
+.bc-toc a:hover{color:var(--ink);padding-left:6px}
+.bc-toc .n{width:2.2em;color:var(--muted);font-variant-numeric:tabular-nums}
+.bc-toc .arr{margin-left:auto;color:var(--accent-soft)}
+.bc-facts{grid-column:1 / -1;margin:0;display:grid;grid-template-columns:repeat(4,1fr);column-gap:var(--gut);border-top:1px solid var(--line)}
+.bc-facts div{padding-top:16px}
+.bc-facts dt{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.bc-facts dd{margin-top:6px;font-family:var(--font-fraunces),Georgia,serif;font-size:clamp(16px,1.5vw,19px);line-height:1.3;color:var(--ink)}
+
+.bc-ch{margin-top:clamp(64px,11vh,132px);scroll-margin-top:96px}
+.bc-head + .bc-ch{margin-top:0}
+.bc-ch-head{display:flex;align-items:baseline;gap:clamp(14px,2vw,28px);margin-bottom:clamp(20px,3vw,36px);padding-top:14px;border-top:1px solid var(--line)}
+.bc-ch-head .n{flex:none;width:2.2em;font-size:12.5px;color:var(--accent);font-variant-numeric:tabular-nums}
+.bc-ch-head h3{font-size:clamp(19px,2vw,24px)}
+.bc-ch-head p{margin-left:auto;max-width:42ch;font-size:13.5px;line-height:1.55;color:var(--sub);text-align:right}
+
+/* Comparateur pleine largeur (le plafonnage 5/4 du projet 05 ne s'applique pas ici) */
+.bc-stage .cmp-wrap{width:100%}
+
+.bc-grid{--bc-gap:clamp(12px,1.6vw,24px);display:grid;grid-template-columns:repeat(12,1fr);gap:var(--bc-gap)}
+.bc-stage + .bc-grid{margin-top:var(--bc-gap)}
+.bc-fig{margin:0;min-width:0}
+.bc-fig .frame{width:100%;aspect-ratio:var(--r,16/10)}
+.bc-tag{position:absolute;left:clamp(10px,1.2vw,16px);bottom:clamp(10px,1.2vw,16px);z-index:2;padding:6px 12px;border-radius:999px;
+  font-size:11.5px;letter-spacing:.04em;color:var(--ink);pointer-events:none;
+  background:rgba(32,32,29,.6);border:1px solid rgba(240,237,229,.14);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+.bc-duo .bc-fig{grid-column:span 6}
+
+/* Le site : plan masse à gauche, deux vues empilées à droite (hauteur calée sur le plan masse) */
+.bc-site .bc-a{grid-column:1 / span 7;grid-row:1 / span 2}
+.bc-site .bc-b{grid-column:8 / span 5;grid-row:1}
+.bc-site .bc-c{grid-column:8 / span 5;grid-row:2}
+.bc-site .bc-b,.bc-site .bc-c{display:flex}
+.bc-site .bc-b .rv-img,.bc-site .bc-c .rv-img{flex:1;min-width:0}
+.bc-site .bc-b .frame,.bc-site .bc-c .frame{aspect-ratio:auto;height:100%}
+
+/* Intérieur et annexes : damier 5/7 puis 7/5, images alignées par le bas */
+.bc-checker{grid-auto-rows:clamp(220px,27vw,360px)}
+.bc-checker .bc-fig{display:flex}
+.bc-checker .bc-fig .rv-img{flex:1;min-width:0}
+.bc-checker .bc-fig .frame{aspect-ratio:auto;height:100%}
+.bc-checker .bc-a{grid-column:1 / span 5}
+.bc-checker .bc-b{grid-column:6 / span 7}
+.bc-checker .bc-c{grid-column:1 / span 7}
+.bc-checker .bc-d{grid-column:8 / span 5}
+
+@media (max-width:900px){
+  .bc-head-main,.bc-head-side{grid-column:1 / -1}
+  .bc-facts{grid-template-columns:repeat(2,1fr);row-gap:4px}
+}
+@media (max-width:820px){
+  .bc-ch-head{flex-wrap:wrap;row-gap:4px}
+  .bc-ch-head p{margin-left:0;flex:1 1 100%;text-align:left}
+  .bc-grid{gap:12px}
+  .bc-grid .bc-fig{grid-column:1 / -1;grid-row:auto}
+  .bc-site .bc-b .frame,.bc-site .bc-c .frame{aspect-ratio:16/10;height:auto}
+  .bc-site .bc-a{--r:16/10}
+  .bc-checker{grid-auto-rows:auto}
+  .bc-checker .bc-fig .frame{aspect-ratio:16/10;height:auto}
+}
 
 /* =========================================================
    LARGE SCREENS — une seule largeur de contenu (--wrap)
