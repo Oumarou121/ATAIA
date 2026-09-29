@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { DOMAINS, bg } from "@/lib/data";
+import { DOMAINS, img } from "@/lib/data";
+import Photo from "./Photo";
 
 export default function Domains() {
   const [active, setActive] = useState(0);
@@ -29,7 +30,9 @@ export default function Domains() {
         </ul>
         <div className="dom-frames" aria-hidden="true">
           {DOMAINS.map((d, i) => (
-            <div key={d.title} className={`frame real dom-frame ${active === i ? "active " : ""}${bg(d.slug, d.i)}`} />
+            <div key={d.title} className={`frame real dom-frame${active === i ? " active" : ""}`}>
+              <Photo src={img(d.slug, d.i)} sizes="(max-width: 900px) 100vw, 50vw" />
+            </div>
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { RESIDENCES, VILLAS, bg } from "@/lib/data";
+import { RESIDENCES, VILLAS, img } from "@/lib/data";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
 
@@ -47,11 +47,11 @@ export default function VillasResidences() {
         >
           {t.groups.map((g) => {
             const group = Array.from({ length: g.n }, (_, i) => ({
-              bg: bg(g.slug, i),
+              src: img(g.slug, i),
               cap: `${g.name} — photo ${i + 1}`,
             }));
             return (
-              <Zoomable key={g.slug} bg={bg(g.slug, 0)} cap={group[0].cap} group={group} className="vr-card">
+              <Zoomable key={g.slug} src={img(g.slug, 0)} sizes="(max-width: 600px) 50vw, 340px" cap={group[0].cap} group={group} className="vr-card">
                 {g.n > 1 && <span className="vr-count">+{g.n - 1}</span>}
                 <p className="vr-name">{g.name}</p>
               </Zoomable>

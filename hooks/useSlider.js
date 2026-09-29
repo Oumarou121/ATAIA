@@ -18,6 +18,7 @@ export function useSlider({
   const [dragging, setDragging] = useState(false);
   const [paused, setPaused] = useState(false);
   const rootRef = useRef(null);
+  const [ready, setReady] = useState(false); // le diaporama approche de l'écran
   const st = useRef({ start: 0, dim: 0, active: false, moved: false, id: null });
 
   const goTo = useCallback(
@@ -122,12 +123,32 @@ export function useSlider({
 
   // Les diapositives hors champ ne doivent ni prendre le focus (ce qui décalerait
   // le conteneur) ni être lues par les lecteurs d'écran.
+  // Une image hors champ d'un diaporama n'est chargée par le navigateur qu'au moment
+  // où elle glisse dans le cadre. Dès que le diaporama approche de l'écran, on charge
+  // donc tout de suite la diapositive courante et ses voisines. Avant cela tout reste
+  // différé, et jamais côté serveur : React précharge les images non différées du HTML.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setReady(true); io.disconnect(); } },
+      { rootMargin: "100% 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const isNear = (i) => {
+    if (!ready) return false;
+    const d = Math.abs(i - index);
+    return Math.min(d, count - d) <= 1;
+  };
   const slideProps = (i) => ({
     tabIndex: i === index ? 0 : -1,
     "aria-hidden": i === index ? undefined : true,
+    loading: isNear(i) ? "eager" : "lazy",
   });
 
-  return { index, count, goTo, next, prev, rootProps, trackStyle, slideProps };
+  return { index, count, goTo, next, prev, rootProps, trackStyle, slideProps, isNear, ready };
 }
 
 export const pad = (n) => (n < 10 ? "0" + n : "" + n);

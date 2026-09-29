@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import { PROJECTS, bg } from "@/lib/data";
+import { PROJECTS, img } from "@/lib/data";
 import Reveal from "./Reveal";
+import Photo from "./Photo";
 
 export default function ProjectIndex() {
   const [active, setActive] = useState(null);
@@ -31,7 +32,9 @@ export default function ProjectIndex() {
         </ol>
         <div className="pprev" aria-hidden="true">
           {PROJECTS.map((p) => (
-            <div key={p.key} className={`frame real pv ${active === p.key ? "active " : ""}${bg(p.slug, p.main)}`} />
+            <div key={p.key} className={`frame real pv${active === p.key ? " active" : ""}`}>
+              <Photo src={img(p.slug, p.main)} sizes="40vw" />
+            </div>
           ))}
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
-import { bg } from "@/lib/data";
+import { img } from "@/lib/data";
+import Photo from "./Photo";
 
 /** Comparateur à curseur : deux vues d'un même projet. */
 export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1", "Vue 2"] }) {
@@ -24,8 +25,12 @@ export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1"
       onPointerLeave={() => (down.current = false)}
       onClick={(e) => { if (!e.target.closest(".cmp-handle")) fromX(e.clientX); }}
     >
-      <div className={`frame real cmp-before ${bg(slug, before)}`}><span className="cmp-label">{labels[0]}</span></div>
-      <div className={`frame real cmp-after ${bg(slug, after)}`} style={{ clipPath: `inset(0 0 0 ${pct}%)` }}>
+      <div className="frame real cmp-before">
+        <Photo src={img(slug, before)} sizes="100vw" />
+        <span className="cmp-label">{labels[0]}</span>
+      </div>
+      <div className="frame real cmp-after" style={{ clipPath: `inset(0 0 0 ${pct}%)` }}>
+        <Photo src={img(slug, after)} sizes="100vw" />
         <span className="cmp-label">{labels[1]}</span>
       </div>
       <div

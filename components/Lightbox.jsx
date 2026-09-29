@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { pad } from "@/hooks/useSlider";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import Photo from "./Photo";
 
 const LightboxCtx = createContext({ open: () => {} });
 export const useLightbox = () => useContext(LightboxCtx);
@@ -31,11 +32,11 @@ export function LightboxProvider({ children }) {
       const seen = new Set();
       list = [];
       document.querySelectorAll("[data-zoom]").forEach((n) => {
-        if (n.closest("[hidden]") || seen.has(n.dataset.bg)) return;
-        seen.add(n.dataset.bg);
-        list.push({ bg: n.dataset.bg, cap: n.dataset.cap || "" });
+        if (n.closest("[hidden]") || seen.has(n.dataset.src)) return;
+        seen.add(n.dataset.src);
+        list.push({ src: n.dataset.src, cap: n.dataset.cap || "" });
       });
-      start = Math.max(0, list.findIndex((it) => it.bg === el.dataset.bg));
+      start = Math.max(0, list.findIndex((it) => it.src === el.dataset.src));
     }
     setItems(list);
     setIdx(start);
@@ -95,7 +96,11 @@ export function LightboxProvider({ children }) {
         <div className="lb-card">
           <button ref={closeBtn} className="lb-close" onClick={close} aria-label="Fermer">Fermer ×</button>
           <div className="lb-media">
-            {cur && <div className={`frame real ${cur.bg}`} role="img" aria-label={cur.cap} />}
+            {cur && (
+              <div className="frame real" role="img" aria-label={cur.cap}>
+                <Photo key={cur.src} src={cur.src} sizes="(max-width: 900px) 100vw, 880px" loading="eager" />
+              </div>
+            )}
           </div>
           <p className="lb-cap">{cur?.cap}</p>
           <div className="lb-nav">
@@ -110,13 +115,13 @@ export function LightboxProvider({ children }) {
 }
 
 /** Image cliquable qui s'ouvre dans la visionneuse. */
-export function Zoomable({ bg, cap, group, className = "", children, ...rest }) {
+export function Zoomable({ src, cap, group, sizes, loading, className = "", children, ...rest }) {
   const { open } = useLightbox();
   return (
     <div
-      className={`frame real zoomable ${className} ${bg}`.replace(/\s+/g, " ").trim()}
+      className={`frame real zoomable ${className}`.replace(/\s+/g, " ").trim()}
       data-zoom={group ? undefined : "true"}
-      data-bg={bg}
+      data-src={src}
       data-cap={cap}
       tabIndex={0}
       role="button"
@@ -127,6 +132,7 @@ export function Zoomable({ bg, cap, group, className = "", children, ...rest }) 
       }}
       {...rest}
     >
+      <Photo src={src} alt={cap || ""} sizes={sizes} loading={loading} />
       {children}
     </div>
   );

@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { PROJECTS, bg, neighbours } from "@/lib/data";
+import { PROJECTS, img, neighbours } from "@/lib/data";
 import { pad, useSlider } from "@/hooks/useSlider";
 import { useDragScroll } from "@/hooks/useDragScroll";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
+import Photo from "./Photo";
 import Compare from "./Compare";
 import Accordion from "./Accordion";
 
@@ -39,14 +40,14 @@ function ProjectNav({ index }) {
     <nav className="proj-nav" aria-label="Navigation entre projets">
       {prev ? (
         <a className="pn-prev" href={`#project-${prev.n}`}>
-          <div className={`frame real pn-frame ${bg(prev.slug, prev.main)}`} />
+          <div className="frame real pn-frame"><Photo src={img(prev.slug, prev.main)} sizes="64px" /></div>
           <span><span className="pn-title">{prev.title}</span></span>
         </a>
       ) : (
         <span />
       )}
       <a className="pn-next" href={next.href ?? `#project-${next.n}`}>
-        <div className={`frame real pn-frame ${bg(next.slug, next.main)}`} />
+        <div className="frame real pn-frame"><Photo src={img(next.slug, next.main)} sizes="64px" /></div>
         <span><span className="pn-title">{next.title}</span></span>
       </a>
     </nav>
@@ -60,7 +61,8 @@ function CarouselLayout({ p }) {
   return (
     <>
       <Zoomable
-        bg={bg(p.slug, p.main)}
+        src={img(p.slug, p.main)}
+        sizes="100vw"
         cap={`${p.title} — vue principale`}
         className="rv-img shown"
         style={{ aspectRatio: "16/9" }}
@@ -68,7 +70,7 @@ function CarouselLayout({ p }) {
       <div className="p1-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
-            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — photo ${i + 1}`} {...s.slideProps(i)} />
+            <Zoomable key={g} src={img(p.slug, g)} sizes="100vw" cap={`${p.title} — photo ${i + 1}`} {...s.slideProps(i)} />
           ))}
         </div>
       </div>
@@ -87,7 +89,7 @@ function VerticalLayout({ p }) {
       <div className="p2-slider slider vertical" role="region" aria-roledescription="carrousel vertical" aria-label="Séquence verticale du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
-            <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} {...s.slideProps(i)} />
+            <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 100vw, 66vw" cap={`${p.title} — vue ${i + 1}`} {...s.slideProps(i)} />
           ))}
         </div>
       </div>
@@ -104,7 +106,7 @@ function MosaicLayout({ p }) {
   return (
     <div className="p3-mosaic">
       {p.gallery.slice(0, 3).map((g, i) => (
-        <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} className={`p3-m${i + 1}`} />
+        <Zoomable key={g} src={img(p.slug, g)} sizes={i === 0 ? "(max-width: 820px) 100vw, 60vw" : "(max-width: 820px) 100vw, 38vw"} cap={`${p.title} — vue ${i + 1}`} className={`p3-m${i + 1}`} />
       ))}
     </div>
   );
@@ -128,7 +130,7 @@ function CompareLayout({ p }) {
             <span className="plan-cap">Plan schématique — illustration</span>
           </div>
         </div>
-        <Zoomable bg={bg(p.slug, c)} cap={`${p.title} — détail`} className="p4-detail" />
+        <Zoomable src={img(p.slug, c)} sizes="(max-width: 820px) 100vw, 50vw" cap={`${p.title} — détail`} className="p4-detail" />
       </div>
       {p.details && (
         <div className="p4-acc-wrap">
@@ -168,7 +170,7 @@ function GalleryLayout({ p }) {
         <div className="p5-hwrap">
           <div className="p5-hgal" ref={hgal} tabIndex={0} aria-label="Galerie horizontale, faites glisser pour parcourir">
             {p.gallery.map((g, i) => (
-              <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} className={i === 0 ? "rv-img shown" : ""} />
+              <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 260px, 380px" cap={`${p.title} — vue ${i + 1}`} className={i === 0 ? "rv-img shown" : ""} />
             ))}
           </div>
           <div className="p5-hprogress"><span style={{ width: `${progress}%` }} /></div>
@@ -179,7 +181,7 @@ function GalleryLayout({ p }) {
         <div className="p5-main slider" role="region" aria-roledescription="carrousel" aria-label="Photographie principale" {...s.rootProps}>
           <div className="sl-track" style={s.trackStyle}>
             {p.gallery.map((g, i) => (
-              <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — principale ${i + 1}`} {...s.slideProps(i)} />
+              <Zoomable key={g} src={img(p.slug, g)} sizes="100vw" cap={`${p.title} — principale ${i + 1}`} {...s.slideProps(i)} />
             ))}
           </div>
         </div>
@@ -190,7 +192,7 @@ function GalleryLayout({ p }) {
         <div className="p5-thumbs" aria-label="Miniatures">
           {p.gallery.map((g, i) => (
             <button key={g} className={`thumb${i === s.index ? " active" : ""}`} aria-label={`Photographie ${i + 1}`} onClick={() => s.goTo(i)}>
-              <div className={`frame real ${bg(p.slug, g)}`} />
+              <div className="frame real"><Photo src={img(p.slug, g)} sizes="82px" /></div>
             </button>
           ))}
         </div>
@@ -203,7 +205,7 @@ function GridLayout({ p }) {
   return (
     <div className="p6-grid">
       {p.gallery.map((g, i) => (
-        <Zoomable key={g} bg={bg(p.slug, g)} cap={`${p.title} — vue ${i + 1}`} />
+        <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 100vw, 50vw" cap={`${p.title} — vue ${i + 1}`} />
       ))}
     </div>
   );

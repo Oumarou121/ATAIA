@@ -1,8 +1,9 @@
 "use client";
-import { PROJECTS, bg } from "@/lib/data";
+import { PROJECTS, img } from "@/lib/data";
 import { pad, useSlider } from "@/hooks/useSlider";
 import { useAutoplay } from "@/hooks/useAutoplay";
 import Magnetic from "./Magnetic";
+import Photo from "./Photo";
 import AutoplayToggle from "./AutoplayToggle";
 
 export default function Hero() {
@@ -21,7 +22,14 @@ export default function Hero() {
       >
         <div className="sl-track" style={s.trackStyle}>
           {PROJECTS.map((pr, i) => (
-            <div key={pr.key} className={`frame real ${i === s.index ? "active " : ""}${bg(pr.slug, pr.main)}`} />
+            <div key={pr.key} className={`frame real${i === s.index ? " active" : ""}`}>
+              <Photo
+                src={img(pr.slug, pr.main)}
+                sizes="100vw"
+                preload={i === 0}
+                loading={i === 0 ? undefined : s.ready && i === (s.index + 1) % s.count ? "eager" : "lazy"}
+              />
+            </div>
           ))}
         </div>
       </div>

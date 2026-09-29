@@ -1,5 +1,5 @@
 "use client";
-import { AGENCY, bg } from "@/lib/data";
+import { AGENCY, img } from "@/lib/data";
 import { pad, useSlider } from "@/hooks/useSlider";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
@@ -21,7 +21,7 @@ export default function Agency() {
         <Reveal className="ag-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies de l'agence" {...s.rootProps}>
           <div className="sl-track" style={s.trackStyle}>
             {AGENCY.slides.map((sl, i) => (
-              <Zoomable key={sl.slug + sl.i} bg={bg(sl.slug, sl.i)} cap={sl.cap} {...s.slideProps(i)} />
+              <Zoomable key={sl.slug + sl.i} src={img(sl.slug, sl.i)} sizes="(max-width: 900px) 80vw, 42vw" cap={sl.cap} {...s.slideProps(i)} />
             ))}
           </div>
         </Reveal>

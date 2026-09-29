@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CONTACT_SLIDES, bg } from "@/lib/data";
+import { CONTACT_SLIDES, img } from "@/lib/data";
 import { useSlider } from "@/hooks/useSlider";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
@@ -37,7 +37,7 @@ export default function Contact() {
       <Reveal className="ct-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies de conclusion" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {CONTACT_SLIDES.map((c, i) => (
-            <Zoomable key={i} bg={bg(c.slug, c.i)} cap={c.cap} {...s.slideProps(i)} />
+            <Zoomable key={i} src={img(c.slug, c.i)} sizes="100vw" cap={c.cap} {...s.slideProps(i)} />
           ))}
         </div>
       </Reveal>

@@ -32,8 +32,8 @@ npm start
   organigramme, domaines, textes)
 - `public/images/<slug>/<n>.jpg` — les photos, chaque groupe (projet, villa,
   résidence) dans son propre dossier
-- `app/globals.css` — le CSS du site (repris tel quel de la maquette), plus une
-  règle `.bg-<slug>-<n>` par image générée depuis `public/images`
+- `components/Photo.jsx` — photo `next/image` qui remplit son cadre (`sizes` = largeur affichée)
+- `app/globals.css` — le CSS du site (repris de la maquette)
 
 ## Formulaire de contact
 
