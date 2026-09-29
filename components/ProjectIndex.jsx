@@ -14,7 +14,7 @@ export default function ProjectIndex() {
     <section className="pindex" id="projects" aria-label="Index des projets">
       <Reveal as="p" className="pindex-head">Projets</Reveal>
       <div className={`pindex-grid${hovering ? " hovering" : ""}`} onMouseLeave={() => setHovering(false)}>
-        <ol>
+        <Reveal as="ol" stagger threshold={0.05}>
           {PROJECTS.map((p) => (
             <li key={p.key}>
               <a
@@ -29,7 +29,7 @@ export default function ProjectIndex() {
               </a>
             </li>
           ))}
-        </ol>
+        </Reveal>
         <div className="pprev" aria-hidden="true">
           {PROJECTS.map((p) => (
             <div key={p.key} className={`frame real pv${active === p.key ? " active" : ""}`}>

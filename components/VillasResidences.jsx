@@ -20,7 +20,7 @@ export default function VillasResidences() {
         <p className="desc">Une sélection de villas privées et de résidences réalisées par l&apos;agence.</p>
       </Reveal>
 
-      <div className="vr-tabs" role="tablist" aria-label="Catégories">
+      <Reveal className="vr-tabs d1" role="tablist" aria-label="Catégories">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -34,12 +34,14 @@ export default function VillasResidences() {
             {t.label}
           </button>
         ))}
-      </div>
+      </Reveal>
 
       {TABS.map((t) => (
-        <div
+        <Reveal
           key={t.key}
           className="vr-grid"
+          stagger
+          threshold={0.05}
           role="tabpanel"
           id={`vr-panel-${t.key}`}
           aria-labelledby={`vr-tab-${t.key}`}
@@ -57,7 +59,7 @@ export default function VillasResidences() {
               </Zoomable>
             );
           })}
-        </div>
+        </Reveal>
       ))}
     </section>
   );

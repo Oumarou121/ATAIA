@@ -3,11 +3,18 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Apparition au scroll : ajoute la classe "shown" quand l'élément entre dans l'écran.
+ * Trois variantes, toutes réglées dans globals.css (bloc REVEAL) :
+ *   (défaut)  fondu + montée légère : textes et blocs
+ *   img       rideau qui se lève : grandes images
+ *   stagger   les enfants directs apparaissent à la suite : listes, grilles, cartes
+ * `threshold` : part visible requise (baisser pour les conteneurs très hauts).
  * Accepte une `ref` externe (fusionnée) pour pouvoir être combiné avec useSlider.
  */
 export default function Reveal({
   as: Tag = "div",
   img = false,
+  stagger = false,
+  threshold = 0.16,
   className = "",
   shown = false,
   ref: extRef,
@@ -30,14 +37,14 @@ export default function Reveal({
     if (!el || reduce || !("IntersectionObserver" in window)) { setOn(true); return; }
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) { setOn(true); io.disconnect(); } }),
-      { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+      { threshold, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [on]);
+  }, [on, threshold]);
 
   return (
-    <Tag ref={setRef} className={`${img ? "rv-img" : "rv"} ${on ? "shown" : ""} ${className}`.trim()} {...rest}>
+    <Tag ref={setRef} className={`${stagger ? "rv-stagger" : img ? "rv-img" : "rv"} ${on ? "shown" : ""} ${className}`.trim()} {...rest}>
       {children}
     </Tag>
   );

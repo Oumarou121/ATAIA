@@ -31,6 +31,10 @@
   --pad-x:max(var(--gut),calc((100% - var(--wrap)) / 2));
   --gap:clamp(84px,14vh,168px);
   --gap-xl:clamp(120px,22vh,248px);
+
+  /* Mouvement : une seule courbe et un seul rythme pour tout le site */
+  --ease-out:cubic-bezier(.2,.6,.2,1);
+  --step:80ms;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,19 +53,37 @@ button{font-family:inherit}
 /* =========================================================
    REVEAL
    ========================================================= */
-.rv{transition:opacity 1s ease,transform 1s cubic-bezier(.2,.6,.2,1)}
+.rv{transition:opacity .95s ease,transform .95s var(--ease-out)}
 .rv-on .rv{opacity:0;transform:translateY(24px)}
 .rv-on .rv.shown{opacity:1;transform:none}
 .d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
 
 /* Le clip-path est posé sur l'enfant (et seulement si .rv-on) : l'élément observé reste visible
    pour l'IntersectionObserver, et sans JS / avec reduced-motion l'image n'est jamais masquée. */
-.rv-img>*{transition:clip-path 1.15s cubic-bezier(.2,.6,.2,1)}
+.rv-img>*{transition:clip-path 1.15s var(--ease-out)}
 .rv-on .rv-img>*{clip-path:inset(0 0 100% 0)}
 .rv-on .rv-img.shown>*{clip-path:inset(0 0 0 0)}
 
+/* Listes, grilles et cartes : les enfants directs apparaissent à la suite (--i = rang, plafonné à 11) */
+.rv-stagger>*{transition:opacity .9s ease,transform .9s var(--ease-out);transition-delay:calc(var(--i,0) * var(--step))}
+.rv-on .rv-stagger>*{opacity:0;transform:translateY(24px)}
+.rv-on .rv-stagger.shown>*{opacity:1;transform:none}
+.rv-stagger>:nth-child(n+12){--i:11}
+.rv-stagger>:nth-child(2){--i:1}.rv-stagger>:nth-child(3){--i:2}.rv-stagger>:nth-child(4){--i:3}
+.rv-stagger>:nth-child(5){--i:4}.rv-stagger>:nth-child(6){--i:5}.rv-stagger>:nth-child(7){--i:6}
+.rv-stagger>:nth-child(8){--i:7}.rv-stagger>:nth-child(9){--i:8}.rv-stagger>:nth-child(10){--i:9}
+.rv-stagger>:nth-child(11){--i:10}
+/* Pied de page : fondu seul (une translation ferait varier la hauteur de la page) */
+.rv-on footer.rv{transform:none}
+/* Organigramme : les traits apparaissent avec le bloc, puis les cases niveau par niveau */
+.rv-on .org-wrap .org-node{opacity:0;transition:opacity .8s ease}
+.rv-on .org-wrap.shown .org-node{opacity:1}
+.org-wrap .tree>ul>li>.org-node{transition-delay:.15s}
+.org-wrap .tree ul ul .org-node{transition-delay:.45s}
+.org-wrap .tree ul ul ul .org-node{transition-delay:.75s}
+
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.rv-on .hero-in{animation:rise 1.4s .5s cubic-bezier(.2,.6,.2,1) both}
+.rv-on .hero-in,.rv-on .hh-in{animation:rise 1.4s .5s cubic-bezier(.2,.6,.2,1) both}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}

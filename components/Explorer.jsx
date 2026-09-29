@@ -14,15 +14,15 @@ export default function Explorer() {
   };
 
   return (
-    <Reveal as="section" className="explorer" aria-label="Explorateur de projets">
-      <div className="explorer-head">
+    <section className="explorer" aria-label="Explorateur de projets">
+      <Reveal className="explorer-head">
         <p>Explorer les projets</p>
         <div className="sl-arrows">
           <button className="sl-btn" onClick={() => scroll(-360)} aria-label="Défiler vers la gauche">←</button>
           <button className="sl-btn" onClick={() => scroll(360)} aria-label="Défiler vers la droite">→</button>
         </div>
-      </div>
-      <div className="exp-track" ref={track} tabIndex={0} aria-label="Faites glisser pour parcourir">
+      </Reveal>
+      <Reveal stagger className="exp-track" ref={track} tabIndex={0} aria-label="Faites glisser pour parcourir">
         {PROJECTS.map((p) => (
           <a key={p.key} className="exp-card" href={`#project-${p.n}`} draggable={false}>
             <div className="frame real"><Photo src={img(p.slug, p.main)} sizes="(max-width: 900px) 240px, 400px" /></div>
@@ -32,7 +32,7 @@ export default function Explorer() {
             </div>
           </a>
         ))}
-      </div>
-    </Reveal>
+      </Reveal>
+    </section>
   );
 }

@@ -1,8 +1,9 @@
 import { SITE } from "@/lib/data";
+import Reveal from "./Reveal";
 
 export default function Footer() {
   return (
-    <footer>
+    <Reveal as="footer">
       <div className="foot-row">
         <div>
           <div className="foot-brand">{SITE.name}</div>
@@ -14,6 +15,6 @@ export default function Footer() {
         </div>
       </div>
       <div className="foot-copy">© {new Date().getFullYear()} {SITE.name} — {SITE.city}</div>
-    </footer>
+    </Reveal>
   );
 }

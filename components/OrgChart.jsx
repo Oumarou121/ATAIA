@@ -1,4 +1,5 @@
 import { ORG } from "@/lib/data";
+import Reveal from "./Reveal";
 
 function Node({ node }) {
   return (
@@ -17,13 +18,13 @@ function Node({ node }) {
 
 export default function OrgChart() {
   return (
-    <div className="org-wrap">
+    <Reveal className="org-wrap" threshold={0.08}>
       <p className="org-title">Organigramme de la société</p>
       <div className="tree">
         <ul>
           <Node node={ORG} />
         </ul>
       </div>
-    </div>
+    </Reveal>
   );
 }

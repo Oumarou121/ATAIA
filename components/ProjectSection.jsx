@@ -37,7 +37,7 @@ function ProjectHead({ p }) {
 function ProjectNav({ index }) {
   const { prev, next } = neighbours(index);
   return (
-    <nav className="proj-nav" aria-label="Navigation entre projets">
+    <Reveal as="nav" className="proj-nav" aria-label="Navigation entre projets">
       {prev ? (
         <a className="pn-prev" href={`#project-${prev.n}`}>
           <div className="frame real pn-frame"><Photo src={img(prev.slug, prev.main)} sizes="64px" /></div>
@@ -50,7 +50,7 @@ function ProjectNav({ index }) {
         <div className="frame real pn-frame"><Photo src={img(next.slug, next.main)} sizes="64px" /></div>
         <span><span className="pn-title">{next.title}</span></span>
       </a>
-    </nav>
+    </Reveal>
   );
 }
 
@@ -113,7 +113,7 @@ function FeatureLayout({ p }) {
       </div>
 
       <Chapter id="bc-1" n={1} c={c1}>
-        <div className="bc-stage">
+        <Reveal img className="bc-stage">
           <Compare
             slug={p.slug}
             before={cmp.before}
@@ -124,7 +124,7 @@ function FeatureLayout({ p }) {
             ratio={cmp.ratio}
             title={p.title}
           />
-        </div>
+        </Reveal>
         <div className="bc-grid bc-duo">
           <Fig p={p} i={2} cls="bc-a" ratio="16/10" sizes={half} />
           <Fig p={p} i={7} cls="bc-b" ratio="16/10" sizes={half} />
@@ -157,14 +157,16 @@ function CarouselLayout({ p }) {
   return (
     <>
       {p.showMain !== false && (
+        <Reveal img>
         <Zoomable
           src={img(p.slug, p.main)}
           sizes="100vw"
           cap={`${p.title} — vue principale`}
-          className="rv-img shown"
           style={{ aspectRatio: "16/9" }}
         />
+        </Reveal>
       )}
+      <Reveal img>
       <div className="p1-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
@@ -172,14 +174,15 @@ function CarouselLayout({ p }) {
           ))}
         </div>
       </div>
-      <div className="p1-bar">
+      </Reveal>
+      <Reveal className="p1-bar">
         <Counter s={s} />
         <Arrows s={s} labels={["Photo précédente", "Photo suivante"]} />
-      </div>
+      </Reveal>
       {p.details && (
-        <div className="p4-acc-wrap">
+        <Reveal className="p4-acc-wrap">
           <Accordion title="Détails du projet" rows={p.details} />
-        </div>
+        </Reveal>
       )}
     </>
   );
@@ -226,7 +229,9 @@ function ChaptersLayout({ p }) {
         </div>
       ))}
 
-      <a className="p2-more" href="#villas-residences">Voir les villas de la cité <span aria-hidden="true">→</span></a>
+      <Reveal>
+        <a className="p2-more" href="#villas-residences">Voir les villas de la cité <span aria-hidden="true">→</span></a>
+      </Reveal>
     </>
   );
 }
@@ -259,6 +264,7 @@ function CompareLayout({ p }) {
         )}
       </Reveal>
       <div className="cmp-main">
+        <Reveal img>
         <Compare
           slug={p.slug}
           before={a}
@@ -271,8 +277,9 @@ function CompareLayout({ p }) {
           position={p.compareFocus}
           title={p.title}
         />
+        </Reveal>
         {rest.length > 0 && (
-          <div className="cmp-more">
+          <Reveal className="cmp-more" stagger>
             {rest.map((g, i) => {
               const v = p.compareViews?.[i];
               return (
@@ -282,7 +289,7 @@ function CompareLayout({ p }) {
                 </figure>
               );
             })}
-          </div>
+          </Reveal>
         )}
       </div>
     </div>
@@ -315,17 +322,17 @@ function GalleryLayout({ p }) {
             {p.kicker}<br />{p.loc}
           </p>
         </Reveal>
-        <div className="p5-hwrap">
+        <Reveal className="p5-hwrap d1">
           <div className="p5-hgal" ref={hgal} tabIndex={0} aria-label="Galerie horizontale, faites glisser pour parcourir">
             {p.gallery.map((g, i) => (
               <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 260px, 380px" cap={`${p.title} — vue ${i + 1}`} className={i === 0 ? "rv-img shown" : ""} />
             ))}
           </div>
           <div className="p5-hprogress"><span style={{ width: `${progress}%` }} /></div>
-        </div>
+        </Reveal>
       </div>
 
-      <div className="p5-thumbwrap">
+      <Reveal className="p5-thumbwrap">
         <div className="p5-main slider" role="region" aria-roledescription="carrousel" aria-label="Photographie principale" {...s.rootProps}>
           <div className="sl-track" style={s.trackStyle}>
             {p.gallery.map((g, i) => (
@@ -344,7 +351,7 @@ function GalleryLayout({ p }) {
             </button>
           ))}
         </div>
-      </div>
+      </Reveal>
     </>
   );
 }

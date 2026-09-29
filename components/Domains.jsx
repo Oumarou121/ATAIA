@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { DOMAINS, img } from "@/lib/data";
 import Photo from "./Photo";
+import Reveal from "./Reveal";
 
 export default function Domains() {
   const [active, setActive] = useState(0);
@@ -12,7 +13,7 @@ export default function Domains() {
   return (
     <section className="domains" id="domains" aria-label="Domaines d'intervention">
       <div className="dom-row">
-        <ul className="dom-list">
+        <Reveal as="ul" stagger className="dom-list">
           {DOMAINS.map((d, i) => (
             <li key={d.title}>
               <button
@@ -27,14 +28,14 @@ export default function Domains() {
               </button>
             </li>
           ))}
-        </ul>
-        <div className="dom-frames" aria-hidden="true">
+        </Reveal>
+        <Reveal className="dom-frames d2" aria-hidden="true">
           {DOMAINS.map((d, i) => (
             <div key={d.title} className={`frame real dom-frame${active === i ? " active" : ""}`}>
               <Photo src={img(d.slug, d.i)} sizes="(max-width: 900px) 100vw, 50vw" />
             </div>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );
