@@ -89,23 +89,49 @@ function CarouselLayout({ p }) {
   );
 }
 
-function VerticalLayout({ p }) {
-  const s = useSlider({ count: p.gallery.length, vertical: true, wheel: true });
+function ChaptersLayout({ p }) {
   return (
-    <div className="p2-layout">
-      <div className="p2-slider slider vertical" role="region" aria-roledescription="carrousel vertical" aria-label="Séquence verticale du projet" {...s.rootProps}>
-        <div className="sl-track" style={s.trackStyle}>
-          {p.gallery.map((g, i) => (
-            <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 100vw, 66vw" cap={`${p.title} — vue ${i + 1}`} {...s.slideProps(i)} />
+    <>
+      <div className="p2-top">
+        <Reveal className="meta">
+          <span className="idx">{p.n}</span>
+          <h2>{p.title}</h2>
+          <p className="loc"><span>{p.kicker}</span><span>{p.loc}</span></p>
+          <p className="desc">{p.desc}</p>
+        </Reveal>
+        {p.details && (
+          <Reveal as="dl" className="p2-facts">
+            {p.details.map(([k, v]) => (
+              <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+          </Reveal>
+        )}
+      </div>
+
+      {p.chapters.map((c, ci) => (
+        <div key={c.label} className={`p2-ch p2-ch-${ci + 1}`}>
+          <Reveal className="p2-ch-head">
+            <span className="n">{pad(ci + 1)}</span>
+            <h3>{c.label}</h3>
+            <p>{c.note}</p>
+          </Reveal>
+          {c.views.map((v) => (
+            <figure key={v.i} className="p2-fig">
+              <Reveal img className={v.wide ? "p2-wide" : undefined}>
+                <Zoomable
+                  src={img(p.slug, v.i)}
+                  sizes={c.views.length === 1 ? "(max-width: 820px) 100vw, 1240px" : "(max-width: 820px) 100vw, 50vw"}
+                  cap={v.alt}
+                  position={v.pos}
+                />
+              </Reveal>
+            </figure>
           ))}
         </div>
-      </div>
-      <div className="p2-side">
-        <Counter s={s} />
-        <Arrows s={s} vertical />
-        <p style={{ fontSize: "12.5px", color: "var(--muted)" }}>Molette, glisser ou flèches</p>
-      </div>
-    </div>
+      ))}
+
+      <a className="p2-more" href="#villas-residences">Voir les villas de la cité <span aria-hidden="true">→</span></a>
+    </>
   );
 }
 
@@ -239,7 +265,7 @@ function GridLayout({ p }) {
 
 const LAYOUTS = {
   carousel: CarouselLayout,
-  vertical: VerticalLayout,
+  chapters: ChaptersLayout,
   mosaic: MosaicLayout,
   compare: CompareLayout,
   gallery: GalleryLayout,
@@ -251,7 +277,7 @@ export default function ProjectSection({ p }) {
   const index = PROJECTS.findIndex((x) => x.key === p.key);
   return (
     <section className="proj" id={`project-${p.n}`} data-idx={p.n} aria-label={`Projet ${p.n}`}>
-      {p.layout !== "compare" && <ProjectHead p={p} />}
+      {p.layout !== "compare" && p.layout !== "chapters" && <ProjectHead p={p} />}
       <Layout p={p} />
       <ProjectNav index={index} />
     </section>
