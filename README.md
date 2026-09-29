@@ -31,7 +31,7 @@ npm start
 - `lib/data.js` — **toutes les données du site** (projets, villas, résidences,
   organigramme, domaines, textes)
 - `public/images/<slug>/<n>.jpg` — les photos, chaque groupe (projet, villa,
-  résidence) dans son propre dossier
+  résidence) dans son propre dossier (les images principales `0` des 6 projets sont en `.png` : voir `PNG_IMAGES` dans `lib/data.js`)
 - `components/Photo.jsx` — photo `next/image` qui remplit son cadre (`sizes` = largeur affichée)
 - `app/globals.css` — le CSS du site (repris de la maquette)
 

@@ -4,7 +4,7 @@ import { img } from "@/lib/data";
 import Photo from "./Photo";
 
 /** Comparateur à curseur : deux vues d'un même projet. */
-export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1", "Vue 2"] }) {
+export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1", "Vue 2"], ratio, position }) {
   const [pct, setPct] = useState(50);
   const root = useRef(null);
   const down = useRef(false);
@@ -18,6 +18,7 @@ export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1"
     <div
       ref={root}
       className="compare"
+      style={ratio ? { aspectRatio: ratio } : undefined}
       role="group"
       aria-label="Comparateur de deux vues du projet"
       onPointerMove={(e) => down.current && fromX(e.clientX)}
@@ -26,11 +27,11 @@ export default function Compare({ slug, before = 0, after = 1, labels = ["Vue 1"
       onClick={(e) => { if (!e.target.closest(".cmp-handle")) fromX(e.clientX); }}
     >
       <div className="frame real cmp-before">
-        <Photo src={img(slug, before)} sizes="100vw" />
+        <Photo src={img(slug, before)} sizes="100vw" position={position} />
         <span className="cmp-label">{labels[0]}</span>
       </div>
       <div className="frame real cmp-after" style={{ clipPath: `inset(0 0 0 ${pct}%)` }}>
-        <Photo src={img(slug, after)} sizes="100vw" />
+        <Photo src={img(slug, after)} sizes="100vw" position={position} />
         <span className="cmp-label">{labels[1]}</span>
       </div>
       <div

@@ -60,17 +60,19 @@ function CarouselLayout({ p }) {
   const s = useSlider({ count: p.gallery.length });
   return (
     <>
-      <Zoomable
-        src={img(p.slug, p.main)}
-        sizes="100vw"
-        cap={`${p.title} — vue principale`}
-        className="rv-img shown"
-        style={{ aspectRatio: "16/9" }}
-      />
+      {p.showMain !== false && (
+        <Zoomable
+          src={img(p.slug, p.main)}
+          sizes="100vw"
+          cap={`${p.title} — vue principale`}
+          className="rv-img shown"
+          style={{ aspectRatio: "16/9" }}
+        />
+      )}
       <div className="p1-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies du projet" {...s.rootProps}>
         <div className="sl-track" style={s.trackStyle}>
           {p.gallery.map((g, i) => (
-            <Zoomable key={g} src={img(p.slug, g)} sizes="100vw" cap={`${p.title} — photo ${i + 1}`} {...s.slideProps(i)} />
+            <Zoomable key={g} src={img(p.slug, g)} sizes="100vw" cap={`${p.title} — photo ${i + 1}`} position={p.focus?.[i]} {...s.slideProps(i)} />
           ))}
         </div>
       </div>
@@ -78,6 +80,11 @@ function CarouselLayout({ p }) {
         <Counter s={s} />
         <Arrows s={s} labels={["Photo précédente", "Photo suivante"]} />
       </div>
+      {p.details && (
+        <div className="p4-acc-wrap">
+          <Accordion title="Détails du projet" rows={p.details} />
+        </div>
+      )}
     </>
   );
 }
@@ -113,25 +120,17 @@ function MosaicLayout({ p }) {
 }
 
 function CompareLayout({ p }) {
-  const [a, b, c] = p.gallery;
+  const [a, b, ...rest] = p.gallery;
   return (
     <>
-      <Compare slug={p.slug} before={a} after={b} />
-      <div className="p4-row">
-        <div className="p4-plan">
-          <div className="plan-board">
-            <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="1.2">
-              <rect x="10" y="10" width="280" height="280" />
-              <line x1="10" y1="103" x2="290" y2="103" />
-              <line x1="10" y1="196" x2="290" y2="196" />
-              <line x1="103" y1="10" x2="103" y2="290" />
-              <line x1="196" y1="10" x2="196" y2="290" />
-            </svg>
-            <span className="plan-cap">Plan schématique — illustration</span>
-          </div>
+      <Compare slug={p.slug} before={a} after={b} labels={p.compareLabels} ratio={p.compareRatio} position={p.compareFocus} />
+      {rest.length > 0 && (
+        <div className="cmp-more">
+          {rest.map((g, i) => (
+            <Zoomable key={g} src={img(p.slug, g)} sizes="(max-width: 820px) 100vw, 50vw" cap={`${p.title} — vue ${i + 3}`} />
+          ))}
         </div>
-        <Zoomable src={img(p.slug, c)} sizes="(max-width: 820px) 100vw, 50vw" cap={`${p.title} — détail`} className="p4-detail" />
-      </div>
+      )}
       {p.details && (
         <div className="p4-acc-wrap">
           <Accordion title="Détails du projet" rows={p.details} />

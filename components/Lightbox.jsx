@@ -115,7 +115,7 @@ export function LightboxProvider({ children }) {
 }
 
 /** Image cliquable qui s'ouvre dans la visionneuse. */
-export function Zoomable({ src, cap, group, sizes, loading, className = "", children, ...rest }) {
+export function Zoomable({ src, cap, group, sizes, loading, position, className = "", children, ...rest }) {
   const { open } = useLightbox();
   return (
     <div
@@ -132,7 +132,7 @@ export function Zoomable({ src, cap, group, sizes, loading, className = "", chil
       }}
       {...rest}
     >
-      <Photo src={src} alt={cap || ""} sizes={sizes} loading={loading} />
+      <Photo src={src} alt={cap || ""} sizes={sizes} loading={loading} position={position} />
       {children}
     </div>
   );

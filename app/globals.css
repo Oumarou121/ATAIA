@@ -24,6 +24,11 @@
   --hdr-bg:rgba(32,32,29,.90);
 
   --gut:clamp(16px,3.2vw,44px);
+  /* Largeur max du contenu + marge latérale commune à TOUTES les sections.
+     Au-delà de --wrap, la marge grandit pour centrer le contenu ; les fonds
+     (Agence, Manifeste, Contact, Footer) restent pleine largeur. */
+  --wrap:1240px;
+  --pad-x:max(var(--gut),calc((100% - var(--wrap)) / 2));
   --gap:clamp(84px,14vh,168px);
   --gap-xl:clamp(120px,22vh,248px);
 }
@@ -159,7 +164,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid tr
   transition:background-color .8s ease,border-color .8s ease,-webkit-backdrop-filter .8s ease,backdrop-filter .8s ease}
 header.solid{background:var(--hdr-bg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
 nav{display:flex;align-items:center;justify-content:space-between;color:var(--ink);
-  padding:calc(22px + env(safe-area-inset-top,0px)) var(--gut) 22px;gap:16px}
+  padding:calc(22px + env(safe-area-inset-top,0px)) var(--pad-x) 22px;gap:16px}
 .brand{font-family:var(--font-fraunces),Georgia,serif;font-size:18px;letter-spacing:.04em;flex:none}
 .hdr-mid{font-size:12px;color:var(--sub);letter-spacing:.03em;font-variant-numeric:tabular-nums}
 .hdr-mid[hidden]{display:none}
@@ -204,7 +209,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .hero .frame:hover .tex{transform:none}
 .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(0deg,rgba(20,20,18,.55) 0%,rgba(20,20,18,.14) 28%,transparent 46%)}
-.hero-in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 var(--gut) calc(clamp(26px,5vh,48px) + env(safe-area-inset-bottom,0px));
+.hero-in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 var(--pad-x) calc(clamp(26px,5vh,48px) + env(safe-area-inset-bottom,0px));
   display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;pointer-events:none}
 .hero-in > *{pointer-events:auto}
 .hero-text .idx{font-size:12.5px;color:var(--sub)}
@@ -225,7 +230,8 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    INTRO
    ========================================================= */
-.intro{padding:clamp(96px,15vh,168px) var(--gut) clamp(40px,7vh,88px);max-width:680px}
+.intro{padding:clamp(96px,15vh,168px) var(--pad-x) clamp(40px,7vh,88px)}
+.intro p{max-width:592px}
 .intro p{font-family:var(--font-fraunces),Georgia,serif;font-weight:340;font-size:clamp(19px,2.2vw,25px);line-height:1.6;color:var(--ink)}
 .intro p + p{margin-top:14px;font-family:var(--font-inter),sans-serif;font-weight:400;font-size:15px;line-height:1.65;color:var(--sub)}
 
@@ -233,10 +239,10 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
    PROJECT EXPLORER — bande horizontale (drag)
    ========================================================= */
 .explorer{padding:clamp(8px,2vh,24px) 0 var(--gap)}
-.explorer-head{display:flex;justify-content:space-between;align-items:flex-end;padding:0 var(--gut);margin-bottom:clamp(20px,3vh,32px)}
+.explorer-head{display:flex;justify-content:space-between;align-items:flex-end;padding:0 var(--pad-x);margin-bottom:clamp(20px,3vh,32px)}
 .explorer-head p{font-size:12.5px;color:var(--sub)}
 .exp-track{display:flex;gap:clamp(16px,2.4vw,28px);overflow-x:auto;scroll-snap-type:x proximity;cursor:grab;
-  padding:4px var(--gut) 18px;scrollbar-width:none}
+  padding:4px var(--pad-x) 18px;scrollbar-width:none}
 .exp-track.dragging{cursor:grabbing;scroll-snap-type:none}
 .exp-track::-webkit-scrollbar{display:none}
 .exp-card{flex:0 0 auto;scroll-snap-align:start;width:clamp(200px,28vw,340px)}
@@ -250,7 +256,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    INDEX DES PROJETS (avec aperçu au survol)
    ========================================================= */
-.pindex{padding:clamp(24px,4vh,48px) var(--gut) clamp(48px,8vh,96px);position:relative}
+.pindex{padding:clamp(24px,4vh,48px) var(--pad-x) clamp(48px,8vh,96px);position:relative}
 .pindex-head{font-size:12.5px;color:var(--sub);margin-bottom:clamp(20px,3vh,32px)}
 .pindex-grid{display:grid;grid-template-columns:1fr;position:relative}
 .pindex ol{list-style:none}
@@ -283,7 +289,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .meta .loc span{display:block}
 .meta .desc{margin-top:12px;font-size:14.5px;line-height:1.6;color:var(--sub);max-width:42ch}
 
-.proj{scroll-margin-top:90px;padding:0 var(--gut) var(--gap)}
+.proj{scroll-margin-top:90px;padding:0 var(--pad-x) var(--gap)}
 #project-02{background:var(--bg-soft);padding-top:var(--gap)}
 .proj-head{max-width:640px;margin-bottom:clamp(28px,4.5vh,52px);display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap}
 
@@ -352,16 +358,6 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .reset3d:hover,.reset3d:focus-visible{opacity:1}
 
 /* =========================================================
-   PLAN
-   ========================================================= */
-.plan-board{position:relative;padding:clamp(12px,1.4vw,18px);background:var(--paper);border:1px solid var(--line);
-  box-shadow:0 30px 54px -28px rgba(0,0,0,.6);text-align:left;cursor:zoom-in}
-.plan-board svg{display:block;width:100%;height:auto;color:#3B372C}
-.plan-board .plan-cap{display:block;margin-top:8px;font-size:11px;color:#6B664F}
-.plan-paper{background:var(--paper);padding:24px;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.plan-paper svg{display:block;width:100%;height:auto;color:#3B372C}
-
-/* =========================================================
    PROJET 01 — carousel photographique
    ========================================================= */
 .p1-main{aspect-ratio:16/9;width:100%}
@@ -411,7 +407,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
   .tree li::before,.tree li::after,.tree ul ul::before{display:none}
   .org-node{max-width:none;margin-bottom:2px}
 }
-.vr{padding:0 var(--gut) var(--gap)}
+.vr{padding:0 var(--pad-x) var(--gap)}
 .vr-head{margin-bottom:clamp(24px,4vh,44px)}
 .vr-head .idx{display:block;font-size:12px;color:var(--sub);margin-bottom:10px}
 .vr-head h2{font-size:clamp(26px,3.2vw,42px);font-weight:500}
@@ -461,12 +457,11 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 @media (max-width:900px){.p3-layout{display:block}.p3-meta-sticky{position:static;margin-bottom:20px;max-width:420px}}
 
 /* =========================================================
-   PROJET 04 — avant/après + plan + accordion
+   Comparateur (projet 06) + fiche « Détails » (projet 04)
    ========================================================= */
-.p4-row{margin-top:clamp(28px,4.5vh,52px);display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gut)}
-.p4-plan{grid-column:1 / span 5}
-.p4-detail{grid-column:7 / span 6;aspect-ratio:4/3.4;align-self:start}
-.p4-acc-wrap{grid-column:1/-1;margin-top:clamp(32px,5vh,52px)}
+.cmp-more{margin-top:clamp(20px,3vw,var(--gut));display:grid;grid-template-columns:1fr 1fr;gap:var(--gut)}
+.cmp-more .frame{aspect-ratio:4/3}
+.p4-acc-wrap{margin-top:clamp(32px,5vh,52px)}
 
 /* =========================================================
    PROJET 05 — galerie horizontale + carousel principal/miniatures
@@ -495,7 +490,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    AGENCE
    ========================================================= */
-.agency{margin-top:var(--gap-xl);padding:var(--gap) var(--gut);background:var(--bg-soft)}
+.agency{margin-top:var(--gap-xl);padding:var(--gap) var(--pad-x);background:var(--bg-soft)}
 .ag-row{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gut);align-items:start}
 .ag-text{grid-column:2 / span 5}
 .ag-text h2{font-size:clamp(24px,3vw,34px);margin-bottom:14px}
@@ -508,13 +503,13 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    MANIFESTO
    ========================================================= */
-.manifesto{margin-top:var(--gap-xl);padding:var(--gap) var(--gut);background:#292823}
+.manifesto{margin-top:var(--gap-xl);padding:var(--gap) var(--pad-x);background:#292823}
 .manifesto p{max-width:760px;font-family:var(--font-fraunces),Georgia,serif;font-weight:340;font-size:clamp(20px,2.6vw,30px);line-height:1.55}
 
 /* =========================================================
    DOMAINES — explorateur interactif
    ========================================================= */
-.domains{margin-top:var(--gap-xl);padding:0 var(--gut)}
+.domains{margin-top:var(--gap-xl);padding:0 var(--pad-x)}
 .dom-row{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gut);align-items:center}
 .dom-list{grid-column:1 / span 5}
 .dom-btn{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
@@ -532,7 +527,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    CONTACT
    ========================================================= */
-.contact{margin-top:var(--gap-xl);padding:var(--gap) var(--gut) calc(var(--gap) + 20px);background:#2A2924}
+.contact{margin-top:var(--gap-xl);padding:var(--gap) var(--pad-x) calc(var(--gap) + 20px);background:#2A2924}
 .ct-carousel{aspect-ratio:21/8;width:100%}
 .ct-carousel .frame{width:100%;height:100%}
 .contact-row{margin-top:clamp(48px,7vh,80px);display:flex;gap:clamp(40px,6vw,96px);flex-wrap:wrap}
@@ -549,7 +544,7 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 /* =========================================================
    FOOTER
    ========================================================= */
-footer{padding:40px var(--gut) calc(40px + env(safe-area-inset-bottom,0px));font-size:13px;color:var(--sub);border-top:1px solid var(--line);background:#1B1B18;margin-top:0}
+footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));font-size:13px;color:var(--sub);border-top:1px solid var(--line);background:#1B1B18;margin-top:0}
 .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:flex-start}
 .foot-brand{font-family:var(--font-fraunces),Georgia,serif;font-size:16px;color:var(--ink);margin-bottom:6px}
 .foot-social{display:flex;gap:16px}
@@ -576,33 +571,15 @@ footer{padding:40px var(--gut) calc(40px + env(safe-area-inset-bottom,0px));font
 .lb-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* =========================================================
-   LARGE SCREENS — on plafonne la largeur des blocs image
-   (les photos réelles seront de qualité modeste : on évite
-   de les afficher en très grand sur les écrans très larges)
+   LARGE SCREENS — une seule largeur de contenu (--wrap)
+   Toutes les sections utilisent --pad-x pour leurs marges
+   latérales : tous les bords gauche/droit sont alignés, et
+   seuls les fonds (Agence, Manifeste, Contact, Footer) et le
+   Hero restent pleine largeur. (Les photos sources sont
+   modestes : on évite de les afficher en très grand.)
    ========================================================= */
-:root{--img-max:1240px}
-
-@media (min-width:1440px){
-  .exp-track{max-width:calc(var(--img-max) * 1.35);margin-left:auto;margin-right:auto}
-  .pindex-grid{max-width:calc(var(--img-max) * 1.35);margin-left:auto;margin-right:auto}
-
-  .ag-row,
-  .dom-row,
-  .contact-row,.ct-carousel{
-    max-width:var(--img-max);
-    margin-left:auto;
-    margin-right:auto;
-  }
-
-  .proj > *{
-    max-width:var(--img-max);
-    margin-left:auto;
-    margin-right:auto;
-  }
-}
-
 @media (min-width:1920px){
-  :root{--img-max:1160px}
+  :root{--wrap:1160px}
 }
 
 /* =========================================================
@@ -612,9 +589,7 @@ footer{padding:40px var(--gut) calc(40px + env(safe-area-inset-bottom,0px));font
   .p2-layout{display:block}
   .p2-slider{width:100%;height:56vh}
   .p2-side{width:auto;margin-top:20px}
-  .p4-row{display:block}
-  .p4-plan{width:70%;margin:0 auto}
-  .p4-detail{width:100%;margin-top:20px}
+  .cmp-more{grid-template-columns:1fr}
   .prow{flex-wrap:wrap;row-gap:4px}
   .prow .t{flex:1 1 100%;order:1}
   .prow .n{order:0}
