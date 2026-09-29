@@ -1,15 +1,22 @@
 "use client";
 import { AGENCY, img } from "@/lib/data";
-import { pad, useSlider } from "@/hooks/useSlider";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
 import OrgChart from "./OrgChart";
-import AutoplayToggle from "./AutoplayToggle";
-import { useAutoplay } from "@/hooks/useAutoplay";
+
+function Fig({ n, className, sizes, aspect }) {
+  const p = AGENCY.photos[n];
+  return (
+    <Reveal as="figure" className={`ag-fig ${className}`}>
+      <div className="ag-ph" style={aspect ? { aspectRatio: aspect } : undefined}>
+        <Zoomable src={img(p.slug, p.i)} sizes={sizes} cap={p.cap} position={p.pos} />
+      </div>
+      <figcaption><b>{String(n + 1).padStart(2, "0")}</b> {p.cap}</figcaption>
+    </Reveal>
+  );
+}
 
 export default function Agency() {
-  const { playing, canAutoplay, toggle } = useAutoplay();
-  const s = useSlider({ count: AGENCY.slides.length, auto: 5200, playing });
   return (
     <section className="agency" id="agency" aria-label="Agence">
       <div className="ag-row">
@@ -18,26 +25,14 @@ export default function Agency() {
           <p className="ag-doms">{AGENCY.domains}</p>
           <p style={{ fontSize: "14.5px", color: "var(--sub)", lineHeight: 1.65, maxWidth: "42ch" }}>{AGENCY.text}</p>
         </Reveal>
-        <Reveal className="ag-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies de l'agence" {...s.rootProps}>
-          <div className="sl-track" style={s.trackStyle}>
-            {AGENCY.slides.map((sl, i) => (
-              <Zoomable key={sl.slug + sl.i} src={img(sl.slug, sl.i)} sizes="(max-width: 900px) 80vw, 42vw" cap={sl.cap} {...s.slideProps(i)} />
-            ))}
-          </div>
-        </Reveal>
+        <Fig n={0} className="ag-a" sizes="(max-width: 900px) 100vw, 40vw" />
       </div>
-      <div className="ag-row" style={{ marginTop: "12px" }}>
-        <div />
-        <div className="ag-bar" style={{ gridColumn: "8/span 5" }}>
-          <div className="ap-group">
-            <span className="sl-counter">{pad(s.index + 1)} / {pad(s.count)}</span>
-            <AutoplayToggle playing={playing} canAutoplay={canAutoplay} onToggle={toggle} />
-          </div>
-          <div className="sl-arrows">
-            <button className="sl-btn" onClick={s.prev} aria-label="Image précédente">←</button>
-            <button className="sl-btn" onClick={s.next} aria-label="Image suivante">→</button>
-          </div>
-        </div>
+      <div className="ag-row">
+        <Fig n={1} className="ag-b" sizes="(max-width: 900px) 100vw, 88vw" />
+      </div>
+      <div className="ag-row ag-pair">
+        <Fig n={2} className="ag-c" sizes="(max-width: 900px) 100vw, 40vw" />
+        <Fig n={3} className="ag-d" sizes="(max-width: 900px) 100vw, 48vw" />
       </div>
       <OrgChart />
     </section>
