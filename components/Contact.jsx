@@ -1,15 +1,10 @@
 "use client";
 import { useState } from "react";
-import { CONTACT_SLIDES, img } from "@/lib/data";
-import { useSlider } from "@/hooks/useSlider";
+import { CONTACT_IMAGE, img } from "@/lib/data";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
-import AutoplayToggle from "./AutoplayToggle";
-import { useAutoplay } from "@/hooks/useAutoplay";
 
 export default function Contact() {
-  const { playing, canAutoplay, toggle } = useAutoplay();
-  const s = useSlider({ count: CONTACT_SLIDES.length, auto: 4600, playing });
   const [status, setStatus] = useState({ state: "idle", msg: "" });
 
   async function onSubmit(e) {
@@ -34,16 +29,9 @@ export default function Contact() {
 
   return (
     <section className="contact" id="contact" aria-label="Contact">
-      <Reveal className="ct-carousel slider" role="region" aria-roledescription="carrousel" aria-label="Photographies de conclusion" {...s.rootProps}>
-        <div className="sl-track" style={s.trackStyle}>
-          {CONTACT_SLIDES.map((c, i) => (
-            <Zoomable key={i} src={img(c.slug, c.i)} sizes="100vw" cap={c.cap} {...s.slideProps(i)} />
-          ))}
-        </div>
+      <Reveal img className="ct-visual">
+        <Zoomable src={img(CONTACT_IMAGE.slug, CONTACT_IMAGE.i)} sizes="(max-width: 900px) 100vw, 1240px" cap={CONTACT_IMAGE.cap} />
       </Reveal>
-      <div className="ct-bar">
-        <AutoplayToggle playing={playing} canAutoplay={canAutoplay} onToggle={toggle} />
-      </div>
 
       <Reveal className="contact-row">
         <h2>Parlons de votre prochain projet.</h2>

@@ -248,7 +248,6 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .hero-auto:hover{color:var(--ink)}
 .ap-toggle{padding:8px 4px;min-height:24px}
 .ap-group{display:flex;align-items:center;gap:14px}
-.ct-bar{display:flex;justify-content:flex-end;margin-top:8px}
 .hero-down{font-size:12.5px;color:var(--sub);display:block;margin-top:6px;transition:opacity .4s ease}
 .hero-down:hover{opacity:.65;color:var(--ink)}
 
@@ -726,8 +725,13 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
    CONTACT
    ========================================================= */
 .contact{margin-top:var(--gap-xl);padding:var(--gap) var(--pad-x) calc(var(--gap) + 20px);background:#2A2924}
-.ct-carousel{aspect-ratio:21/8;width:100%}
-.ct-carousel .frame{width:100%;height:100%}
+/* Image unique : le dessin fait 2032×774 (21/8) ; sur mobile on recadre sur le bâtiment */
+.ct-visual{aspect-ratio:21/8;width:100%}
+.ct-visual .frame{width:100%;height:100%}
+@media (max-width:900px){
+  .ct-visual{aspect-ratio:16/10}
+  .ct-visual .frame>img{object-position:70% 50%}
+}
 .contact-row{margin-top:clamp(48px,7vh,80px);display:flex;gap:clamp(40px,6vw,96px);flex-wrap:wrap}
 .contact h2{font-size:clamp(26px,3.4vw,40px);max-width:12ch}
 .cform{margin-top:28px;flex:1 1 320px;max-width:440px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
