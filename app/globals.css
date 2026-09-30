@@ -75,12 +75,20 @@ button{font-family:inherit}
 .rv-stagger>:nth-child(11){--i:10}
 /* Pied de page : fondu seul (une translation ferait varier la hauteur de la page) */
 .rv-on footer.rv{transform:none}
-/* Organigramme : les traits apparaissent avec le bloc, puis les cases niveau par niveau */
-.rv-on .org-wrap .org-node{opacity:0;transition:opacity .8s ease}
-.rv-on .org-wrap.shown .org-node{opacity:1}
-.org-wrap .tree>ul>li>.org-node{transition-delay:.15s}
-.org-wrap .tree ul ul .org-node{transition-delay:.45s}
-.org-wrap .tree ul ul ul .org-node{transition-delay:.75s}
+/* Organigramme : les traits apparaissent d'abord, puis les cases niveau par niveau */
+.org-wrap{--lc:#665e4e}
+.org-dirs::before,.org-dir::before,.org-dir::after,.org-divs>li::before,.org-divs>li::after,
+.org-divs .org-card::before,.org-divs .org-card::after,
+.org-dirs>li::after,.org-dirs .org-card::before,.org-dirs .org-card::after{transition:opacity .9s ease}
+.org-card{transition:opacity .8s ease,transform .8s var(--ease-out)}
+.rv-on .org-wrap:not(.shown) .org-card{opacity:0;transform:translateY(10px)}
+.rv-on .org-wrap:not(.shown) .org-dirs::before,.rv-on .org-wrap:not(.shown) .org-dir::before,.rv-on .org-wrap:not(.shown) .org-dir::after,
+.rv-on .org-wrap:not(.shown) .org-divs>li::before,.rv-on .org-wrap:not(.shown) .org-divs>li::after,
+.rv-on .org-wrap:not(.shown) .org-divs .org-card::before,.rv-on .org-wrap:not(.shown) .org-divs .org-card::after,
+.rv-on .org-wrap:not(.shown) .org-dirs>li::after,.rv-on .org-wrap:not(.shown) .org-dirs .org-card::before,.rv-on .org-wrap:not(.shown) .org-dirs .org-card::after{opacity:0}
+.org-root>.org-card{transition-delay:.3s}
+.org-dir>.org-card{transition-delay:.6s}
+.org-divs .org-card{transition-delay:.9s}
 
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .rv-on .hero-in,.rv-on .hh-in{animation:rise 1.4s .5s cubic-bezier(.2,.6,.2,1) both}
@@ -490,28 +498,59 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 }
 
 /* Organigramme (dans Agence) */
-.org-wrap{margin-top:clamp(56px,8vh,96px);padding-top:clamp(40px,6vh,64px);border-top:1px solid var(--line)}
-.org-title{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-bottom:clamp(24px,4vh,40px)}
-.tree{overflow-x:auto;padding-bottom:8px}
-.tree ul{padding-top:26px;position:relative;transition:all .4s;display:flex;justify-content:center;margin:0}
-.tree li{list-style-type:none;position:relative;padding:26px 10px 0 10px;transition:all .4s;display:flex;flex-direction:column;align-items:center}
-.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:1px solid var(--line);width:50%;height:26px}
-.tree li::after{right:auto;left:50%;border-left:1px solid var(--line)}
-.tree li:only-child::after,.tree li:only-child::before{display:none}
-.tree li:only-child{padding-top:0}
-.tree li:first-child::before,.tree li:last-child::after{border:0 none}
-.tree li:last-child::before{border-right:1px solid var(--line);border-radius:0 5px 0 0}
-.tree li:first-child::after{border-radius:5px 0 0 0}
-.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:1px solid var(--line);width:0;height:26px}
-.org-node{border:1px solid var(--line);padding:11px 16px;border-radius:6px;display:inline-block;
-  color:var(--fg);background:var(--bg-soft);font-size:12px;line-height:1.35;max-width:168px;white-space:normal}
-.org-node.root{font-family:Georgia,'Times New Roman',serif;font-size:14.5px;border-color:var(--fg);font-weight:500}
-.org-node.leaf{color:var(--sub);font-size:11.5px}
-@media (max-width:820px){
-  .tree ul,.tree li{display:block}
-  .tree li{padding:16px 0 0 20px}
-  .tree li::before,.tree li::after,.tree ul ul::before{display:none}
-  .org-node{max-width:none;margin-bottom:2px}
+/* =========================================================
+   ORGANIGRAMME — 3 niveaux : direction générale, directions (colonnes), divisions (arborescence)
+   ========================================================= */
+.org-wrap{margin-top:clamp(56px,8vh,96px);padding-top:clamp(40px,6vh,64px);border-top:1px solid var(--line);--gap-org:clamp(14px,2vw,28px)}
+.org-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px 32px;margin-bottom:clamp(28px,5vh,52px)}
+.org-title{font-size:clamp(22px,2.4vw,30px);font-weight:440;letter-spacing:-.01em}
+.org-facts{font-size:12.5px;letter-spacing:.02em;color:var(--sub);font-variant-numeric:tabular-nums}
+:where(.org-tree,.org-tree ul){list-style:none;margin:0;padding:0}
+.org-card{position:relative;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:14px 18px 16px}
+.org-lv{display:block;margin-bottom:8px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.org-name{display:block;font-family:var(--font-fraunces),Georgia,serif;color:var(--ink);line-height:1.25}
+
+/* niveau 0 : direction générale */
+.org-root{display:flex;flex-direction:column;align-items:center}
+.org-root>.org-card{width:min(100%,340px);text-align:center;border-color:var(--accent-soft)}
+.org-root>.org-card .org-lv{color:var(--accent)}
+.org-root>.org-card .org-name{font-size:clamp(20px,2.2vw,26px)}
+
+/* niveau 1 : directions (colonnes reliées par une barre horizontale) */
+.org-dirs{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));column-gap:var(--gap-org);align-items:start;width:100%;margin-top:36px;position:relative}
+.org-dirs::before{content:'';position:absolute;left:50%;top:-36px;height:18px;border-left:1px solid var(--lc)}
+.org-dir{position:relative;min-width:0}
+.org-dir::before{content:'';position:absolute;top:-18px;left:calc(var(--gap-org) / -2);right:calc(var(--gap-org) / -2);border-top:1px solid var(--lc)}
+.org-dir:first-child::before{left:50%}
+.org-dir:last-child::before{right:50%}
+.org-dir:only-child::before{display:none}
+.org-dir::after{content:'';position:absolute;top:-18px;left:50%;height:18px;border-left:1px solid var(--lc)}
+.org-dir>.org-card{min-height:clamp(100px,8vw,110px);border-top:2px solid var(--accent-soft)}
+.org-dir>.org-card .org-name{font-size:clamp(16px,1.5vw,19px)}
+.org-dir>.org-card .org-lv{color:var(--accent)}
+
+/* niveau 2 : divisions (arborescence en retrait sous chaque direction) */
+.org-divs{display:flow-root;margin:0 0 0 22px}
+.org-divs>li{position:relative;margin-top:14px;padding-left:26px}
+.org-divs>li:not(:last-child)::before{content:'';position:absolute;left:0;top:-14px;bottom:0;border-left:1px solid var(--lc)}
+.org-divs .org-card{background:transparent;padding:12px 16px}
+.org-divs .org-card::before{content:'';position:absolute;top:50%;left:-26px;width:26px;border-top:1px solid var(--lc)}
+.org-divs>li:last-child .org-card::after{content:'';position:absolute;left:-26px;top:-14px;height:calc(50% + 14px);border-left:1px solid var(--lc)}
+.org-divs .org-name{font-family:var(--font-inter),system-ui,sans-serif;font-size:13.5px;line-height:1.4;color:var(--sub)}
+
+@media (max-width:900px){
+  .org-root{align-items:stretch}
+  .org-root>.org-card{width:100%;text-align:left}
+  /* les directions s'empilent ; la même arborescence en retrait relie les trois niveaux */
+  .org-dirs{display:flow-root;width:auto;margin:0 0 0 22px}
+  .org-dirs::before,.org-dir::before{display:none}
+  .org-dir::after{display:none}
+  .org-dirs>li{margin-top:14px;padding-left:26px}
+  .org-dirs>li:not(:last-child)::after{display:block;content:'';position:absolute;left:0;top:-14px;bottom:0;height:auto;border-left:1px solid var(--lc)}
+  .org-dirs>li>.org-card{min-height:0}
+  .org-dirs>li>.org-card::before{content:'';position:absolute;top:50%;left:-26px;width:26px;border-top:1px solid var(--lc)}
+  .org-dirs>li:last-child>.org-card::after{content:'';position:absolute;left:-26px;top:-14px;height:calc(50% + 14px);border-left:1px solid var(--lc)}
+  .org-divs{margin-left:14px}
 }
 /* =========================================================
    VILLAS & RÉSIDENCES — en-tête éditorial, onglets soulignés,
@@ -725,12 +764,12 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
    CONTACT
    ========================================================= */
 .contact{margin-top:var(--gap-xl);padding:var(--gap) var(--pad-x) calc(var(--gap) + 20px);background:#2A2924}
-/* Image unique : le dessin fait 2032×774 (21/8) ; sur mobile on recadre sur le bâtiment */
+/* Image unique : le croquis fait environ 2032×774 (21/8) ; sur mobile on recadre sur le bâtiment et son dôme */
 .ct-visual{aspect-ratio:21/8;width:100%}
 .ct-visual .frame{width:100%;height:100%}
 @media (max-width:900px){
   .ct-visual{aspect-ratio:16/10}
-  .ct-visual .frame>img{object-position:70% 50%}
+  .ct-visual .frame>img{object-position:52% 50%}
 }
 .contact-row{margin-top:clamp(48px,7vh,80px);display:flex;gap:clamp(40px,6vw,96px);flex-wrap:wrap}
 .contact h2{font-size:clamp(26px,3.4vw,40px);max-width:12ch}
@@ -756,21 +795,41 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
 /* =========================================================
    LIGHTBOX
    ========================================================= */
-.lightbox{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
-  padding:var(--gut);background:rgba(25,25,22,.97);opacity:0;pointer-events:none;transition:opacity .4s ease}
-.lightbox.open{opacity:1;pointer-events:auto}
-.lb-card{position:relative;width:min(880px,100%);background:var(--surface);border:1px solid var(--line);padding:clamp(18px,3vw,32px);
-  transform:scale(.97);transition:transform .4s ease}
-.lightbox.open .lb-card{transform:none}
-.lb-media{width:100%;aspect-ratio:4/3;touch-action:pan-y}
-.lb-media .frame{width:100%;height:100%}
-.lb-cap{margin-top:14px;font-size:12.5px;color:var(--sub)}
-.lb-close{position:absolute;top:14px;right:14px;background:none;border:0;font:400 15px var(--font-inter),sans-serif;color:var(--sub);cursor:pointer;padding:6px;z-index:2}
-.lb-close:hover{color:var(--ink)}
-.lb-nav{display:flex;justify-content:space-between;margin-top:14px;align-items:center}
-.lb-nav button{background:none;border:0;font:400 13px var(--font-inter),sans-serif;color:var(--sub);cursor:pointer;padding:4px}
-.lb-nav button:hover{color:var(--ink)}
-.lb-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+/* Visionneuse plein écran : l'image est montrée entière (contain), jamais recadrée */
+.lightbox{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;background:#141412;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+  opacity:0;pointer-events:none;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
+.lightbox.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .4s ease}
+.lb-top{display:flex;justify-content:space-between;align-items:center;padding:clamp(12px,2vh,20px) var(--gut)}
+.lb-count{font-size:13px;letter-spacing:.06em;color:var(--sub);font-variant-numeric:tabular-nums}
+.lb-count b{font-weight:400;color:var(--accent)}
+.lb-close{display:inline-flex;align-items:center;gap:10px;min-height:42px;padding:0 16px;border:1px solid var(--line);border-radius:999px;
+  background:transparent;color:var(--paper);font:400 13px var(--font-inter),sans-serif;letter-spacing:.03em;cursor:pointer;
+  transition:background-color .3s,border-color .3s}
+.lb-close:hover{background:var(--surface);border-color:var(--accent-soft)}
+.lb-body{flex:1;min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:clamp(10px,2vw,28px);padding:0 var(--gut)}
+.lb-stage{position:relative;height:100%;min-width:0;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.lb-fig{position:absolute;inset:0;opacity:0}
+.lb-fig.ready{opacity:1;animation:lbIn .55s var(--ease-out) both}
+.lb-fig img{object-fit:contain}
+@keyframes lbIn{from{opacity:0;transform:scale(1.015)}to{opacity:1;transform:none}}
+.lb-arrow{flex:none;width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;
+  background:transparent;color:var(--paper);cursor:pointer;transition:background-color .3s,border-color .3s}
+.lb-arrow:hover{background:var(--surface);border-color:var(--accent-soft)}
+.lb-arrow-foot{display:none}
+.lb-bottom{display:flex;justify-content:center;align-items:center;gap:18px;padding:clamp(12px,2vh,22px) var(--gut) clamp(16px,3vh,28px)}
+.lb-cap{max-width:72ch;text-align:center;font-size:14px;line-height:1.55;color:var(--paper);min-height:1.55em}
+.lb-pre{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+@media (max-width:700px){
+  /* sur téléphone, les flèches passent sous l'image, de part et d'autre de la légende */
+  .lb-body{grid-template-columns:minmax(0,1fr);padding:0 12px}
+  .lb-arrow-side{display:none}
+  .lb-arrow-foot{display:inline-flex}
+  .lb-bottom{justify-content:space-between;padding:12px var(--gut) 16px}
+  .lb-cap{flex:1;font-size:13px}
+  .lb-close span{display:none}
+  .lb-close{padding:0 13px}
+}
 
 /* =========================================================
    PROJET 01 — étude de cas (BCEAO Tahoua)

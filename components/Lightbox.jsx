@@ -64,14 +64,18 @@ export function LightboxProvider({ children }) {
       if (e.key === "Escape") close();
       else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
       else if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
+      else if (e.key === "Home") { e.preventDefault(); setIdx(0); }
+      else if (e.key === "End") { e.preventDefault(); setIdx(items.length - 1); }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [isOpen, close, go]);
+  }, [isOpen, close, go, items.length]);
 
   useFocusTrap(overlay, isOpen);
 
   const cur = items[idx];
+  const many = items.length > 1;
+  const at = (d) => items[(idx + d + items.length) % items.length];
 
   return (
     <LightboxCtx.Provider value={{ open }}>
@@ -85,32 +89,86 @@ export function LightboxProvider({ children }) {
         aria-label="Visionneuse d'image"
         aria-hidden={!isOpen}
         onClick={(e) => { if (e.target === e.currentTarget) close(); }}
-        onPointerDown={(e) => (dragX.current = e.clientX)}
-        onPointerUp={(e) => {
-          if (dragX.current === null) return;
-          const dx = e.clientX - dragX.current;
-          if (Math.abs(dx) > 60) go(dx < 0 ? 1 : -1);
-          dragX.current = null;
-        }}
       >
-        <div className="lb-card">
-          <button ref={closeBtn} className="lb-close" onClick={close} aria-label="Fermer">Fermer ×</button>
-          <div className="lb-media">
-            {cur && (
-              <div className="frame real" role="img" aria-label={cur.cap}>
-                <Photo key={cur.src} src={cur.src} sizes="(max-width: 900px) 100vw, 880px" loading="eager" />
-              </div>
-            )}
-          </div>
-          <p className="lb-cap">{cur?.cap}</p>
-          <div className="lb-nav">
-            <button onClick={() => go(-1)}>← Précédent</button>
-            <span className="lb-count">{cur ? `${pad(idx + 1)} / ${pad(items.length)}` : ""}</span>
-            <button onClick={() => go(1)}>Suivant →</button>
-          </div>
+        <div className="lb-top" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
+          <p className="lb-count" aria-live="polite">
+            {cur ? (<><b>{pad(idx + 1)}</b> / {pad(items.length)}</>) : null}
+          </p>
+          <button ref={closeBtn} className="lb-close" onClick={close} aria-label="Fermer la visionneuse">
+            <span>Fermer</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
         </div>
+
+        <div className="lb-body">
+          {many && (
+            <button className="lb-arrow lb-arrow-side" onClick={() => go(-1)} aria-label="Image précédente">
+              <Arrow dir="left" />
+            </button>
+          )}
+          <div
+            className="lb-stage"
+            onPointerDown={(e) => (dragX.current = e.clientX)}
+            onPointerUp={(e) => {
+              if (dragX.current === null) return;
+              const dx = e.clientX - dragX.current;
+              if (many && Math.abs(dx) > 60) go(dx < 0 ? 1 : -1);
+              dragX.current = null;
+            }}
+            onPointerCancel={() => (dragX.current = null)}
+          >
+            {cur && <LbImage key={cur.src} src={cur.src} cap={cur.cap} />}
+          </div>
+          {many && (
+            <button className="lb-arrow lb-arrow-side" onClick={() => go(1)} aria-label="Image suivante">
+              <Arrow dir="right" />
+            </button>
+          )}
+        </div>
+
+        <div className="lb-bottom" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
+          {many && (
+            <button className="lb-arrow lb-arrow-foot" onClick={() => go(-1)} aria-label="Image précédente">
+              <Arrow dir="left" />
+            </button>
+          )}
+          <p className="lb-cap" aria-live="polite">{cur?.cap}</p>
+          {many && (
+            <button className="lb-arrow lb-arrow-foot" onClick={() => go(1)} aria-label="Image suivante">
+              <Arrow dir="right" />
+            </button>
+          )}
+        </div>
+
+        {/* précharge les voisines pour que le passage à l'image suivante soit immédiat */}
+        {isOpen && many && (
+          <div className="lb-pre" aria-hidden="true">
+            {[at(-1), at(1)].map((it) => (
+              <Photo key={it.src} src={it.src} sizes="100vw" loading="eager" />
+            ))}
+          </div>
+        )}
       </div>
     </LightboxCtx.Provider>
+  );
+}
+
+function Arrow({ dir }) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={dir === "left" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+    </svg>
+  );
+}
+
+/** Image entière (object-fit: contain), qui n'apparaît qu'une fois chargée. */
+function LbImage({ src, cap }) {
+  const [ready, setReady] = useState(false);
+  const done = () => setReady(true);
+  return (
+    <div className={`lb-fig${ready ? " ready" : ""}`}>
+      <Photo src={src} alt={cap || ""} sizes="100vw" loading="eager" onLoad={done} onError={done} />
+    </div>
   );
 }
 
