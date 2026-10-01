@@ -28,6 +28,24 @@ export const metadata = {
   },
 };
 
+// Données structurées (référencement local) : nom, téléphones, e-mail et adresse viennent de SITE.contact.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: SITE.name,
+  alternateName: SITE.fullName,
+  description: SITE.description,
+  ...(process.env.NEXT_PUBLIC_SITE_URL ? { url: process.env.NEXT_PUBLIC_SITE_URL } : {}),
+  telephone: SITE.contact.phones.map((p) => p.tel),
+  email: SITE.contact.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: SITE.contact.addressLines[0].replace(" — ", ", "),
+    addressLocality: "Niamey",
+    addressCountry: "NE",
+  },
+};
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -46,7 +64,13 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

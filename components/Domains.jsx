@@ -24,22 +24,27 @@ export default function Domains() {
       <div className="dom-row">
         <Reveal as="ul" stagger className="dom-list">
           {DOMAINS.map((d, i) => (
-            <li key={d.title}>
+            <li
+              key={d.title}
+              className={`dom-item${active === i ? " active" : ""}`}
+              onMouseEnter={() => setActive(i)}
+            >
               <button
                 type="button"
-                className={`dom-btn${active === i ? " active" : ""}`}
+                className="dom-btn"
                 aria-current={active === i ? "true" : undefined}
                 onClick={() => setActive(i)}
                 onFocus={() => setActive(i)}
-                onMouseEnter={() => setActive(i)}
               >
                 <span className="dn">{pad2(i + 1)}</span>
-                <span className="dtxt">
-                  <span className="dt">{d.title}</span>
-                  <span className="dd">{d.desc}</span>
-                </span>
+                <span className="dt">{d.title}</span>
                 <span className="darr" aria-hidden="true">→</span>
               </button>
+              <ul className="dom-svc">
+                {d.services.map((sv) => (
+                  <li key={sv}>{sv}</li>
+                ))}
+              </ul>
             </li>
           ))}
         </Reveal>

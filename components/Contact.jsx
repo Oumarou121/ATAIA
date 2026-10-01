@@ -34,8 +34,15 @@ export default function Contact() {
       </Reveal>
 
       <Reveal className="contact-row">
-        <h2>Parlons de votre prochain projet.</h2>
+        <div className="ct-left">
+          <h2>Parlons de votre prochain projet.</h2>
+        </div>
         <form className="cform" onSubmit={onSubmit}>
+          {/* champ piège anti-robots : invisible et ignoré des visiteurs */}
+          <div className="cf-hp" aria-hidden="true">
+            <label htmlFor="cf-website">Ne pas remplir</label>
+            <input id="cf-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+          </div>
           <div>
             <label htmlFor="cf-name">Nom</label>
             <input id="cf-name" name="name" type="text" required autoComplete="name" />

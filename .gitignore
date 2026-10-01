@@ -4,4 +4,8 @@ node_modules
 .DS_Store
 npm-debug.log*
 *.zip
+functions/node_modules
+functions/.env
+functions/.env.local
+functions/.secret.local
 out

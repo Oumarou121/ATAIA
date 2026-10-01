@@ -9,6 +9,15 @@ export default function Footer() {
           <div className="foot-brand">{SITE.name}</div>
           <div>{SITE.tagline}</div>
         </div>
+        <address className="foot-contact">
+          <a href={`mailto:${SITE.contact.email}`}>{SITE.contact.email}</a>
+          <span className="foot-phones">
+            {SITE.contact.phones.map((p) => (
+              <a key={p.tel} href={`tel:${p.tel}`}>{p.label}</a>
+            ))}
+          </span>
+          <span>{SITE.contact.addressLines.join(", ")}</span>
+        </address>
         <div className="foot-social">
           <a href="#">Instagram</a>
           <a href="#">LinkedIn</a>
