@@ -24,7 +24,7 @@ export const metadata = {
     description: SITE.description,
     locale: "fr_FR",
     type: "website",
-    images: [{ url: "/images/bceao-tahoua/0.png" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630 }],
   },
 };
 

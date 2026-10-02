@@ -1,8 +1,9 @@
 "use client";
-import { AGENCY, img } from "@/lib/data";
+import { AGENCY, SITE, img } from "@/lib/data";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
 import OrgChart from "./OrgChart";
+import Team from "./Team";
 
 function Fig({ n, className, sizes, aspect }) {
   const p = AGENCY.photos[n];
@@ -22,6 +23,7 @@ export default function Agency() {
       <div className="ag-row">
         <Reveal className="ag-text">
           <h2>{AGENCY.title}</h2>
+          <p className="ag-full">{SITE.fullName}</p>
           <p className="ag-doms">{AGENCY.domains}</p>
           <p style={{ fontSize: "14.5px", color: "var(--sub)", lineHeight: 1.65, maxWidth: "42ch" }}>{AGENCY.text}</p>
         </Reveal>
@@ -35,6 +37,7 @@ export default function Agency() {
         <Fig n={3} className="ag-d" sizes="(max-width: 900px) 100vw, 48vw" />
       </div>
       <OrgChart />
+      <Team />
     </section>
   );
 }

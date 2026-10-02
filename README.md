@@ -31,8 +31,10 @@ npm start
   `useDragScroll` (galerie horizontale au glisser)
 - `lib/data.js` — **toutes les données du site** (projets, villas, résidences,
   organigramme, domaines, textes)
-- `public/images/<slug>/<n>.jpg` — les photos, chaque groupe (projet, villa,
-  résidence) dans son propre dossier (les images principales `0` des 6 projets sont en `.png` : voir `PNG_IMAGES` dans `lib/data.js`)
+- `public/images/<slug>/<n>.webp` — les photos, chaque groupe (projet, villa,
+  résidence) dans son propre dossier. Elles sont produites par `npm run images`
+  (voir `scripts/optimize-images.mjs`) ; garder les originaux hors du projet.
+- `public/og.jpg` — image d'aperçu pour le partage (WhatsApp, réseaux), générée par le même script
 - `components/Photo.jsx` — photo `next/image` qui remplit son cadre (`sizes` = largeur affichée)
 - `app/globals.css` — le CSS du site (repris de la maquette)
 

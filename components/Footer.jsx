@@ -7,6 +7,7 @@ export default function Footer() {
       <div className="foot-row">
         <div>
           <div className="foot-brand">{SITE.name}</div>
+          <div className="foot-full">{SITE.fullName}</div>
           <div>{SITE.tagline}</div>
         </div>
         <address className="foot-contact">
@@ -16,7 +17,17 @@ export default function Footer() {
               <a key={p.tel} href={`tel:${p.tel}`}>{p.label}</a>
             ))}
           </span>
-          <span>{SITE.contact.addressLines.join(", ")}</span>
+          <span>
+            {SITE.contact.addressLines.join(", ")}
+            <a
+              className="foot-map"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.contact.mapsQuery)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Itinéraire ↗
+            </a>
+          </span>
         </address>
         <div className="foot-social">
           <a href="#">Instagram</a>

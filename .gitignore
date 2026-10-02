@@ -9,3 +9,5 @@ functions/.env
 functions/.env.local
 functions/.secret.local
 out
+originals
+*.zip
