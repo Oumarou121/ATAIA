@@ -7,16 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "images": "node scripts/optimize-images.mjs"
+    "images": "node scripts/optimize-images.mjs",
+    "test": "node --test"
   },
   "dependencies": {
     "next": "16.3.6",
+    "nodemailer": "^10.0.13",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
-    "sharp": "^0.35.5"
+    "mailparser": "^3.9.33",
+    "sharp": "^0.35.5",
+    "smtp-server": "^3.19.16"
   }
 }

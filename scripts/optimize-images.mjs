@@ -5,7 +5,7 @@
 //   2. npm run images
 //   3. Le résultat est écrit dans public/images/<slug>/<n>.webp, plus public/og.jpg (image de partage)
 //
-// Les originaux ne sont jamais modifiés. Le dossier originals/ n'est pas déployé (firebase.json ne publie que out/).
+// Les originaux ne sont jamais modifiés. Le dossier originals/ est ignoré par Git (.gitignore) : il n'est ni envoyé sur GitHub ni déployé.
 import sharp from "sharp";
 import fs from "node:fs";
 import path from "node:path";

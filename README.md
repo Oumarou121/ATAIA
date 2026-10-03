@@ -24,7 +24,7 @@ npm start
 ## Structure
 
 - `app/` — pages Next.js (App Router) et layout
-- `functions/` — Cloud Function d'envoi du formulaire de contact (voir plus bas)
+- `app/api/contact/` et `lib/contact.mjs` — envoi du formulaire de contact (voir plus bas)
 - `components/` — un composant par section (Hero, ProjectSection, VillasResidences,
   Agency, OrgChart, Domains, Contact, Lightbox…)
 - `hooks/` — `useSlider` (carrousel générique glisser/clavier/molette/autoplay),
@@ -40,44 +40,40 @@ npm start
 
 ## Formulaire de contact (envoi d'e-mail)
 
-Le site est exporté en statique (`output: 'export'`) et hébergé sur Firebase Hosting :
-il n'a donc pas de serveur Next.js. L'envoi du formulaire passe par une **Cloud Function**
-(`functions/`, fonction `contact`, région `europe-west1`) que `firebase.json` expose sur
-`/api/contact` : le formulaire poste toujours vers cette même adresse.
+Le site est un projet Next.js **avec serveur**, hébergé sur **Vercel**. L'envoi du formulaire passe par la
+route API `app/api/contact/route.js` (qui s'exécute côté serveur, comme une fonction serverless) ;
+la logique est dans `lib/contact.mjs`. Le formulaire poste vers `/api/contact`.
 
-La fonction valide les champs, ignore les robots (champ piège), limite à 5 messages par IP
-et par 10 minutes, puis envoie le message en SMTP à l'agence. « Répondre » écrit directement au visiteur.
+Elle valide les champs, ignore les robots (champ piège), limite à 5 messages par IP et par 10 minutes
+(au mieux : compteur par instance), refuse les appels venant d'un autre site, puis envoie le message en
+SMTP à l'agence. « Répondre » écrit directement au visiteur.
 
-### Mise en route (une seule fois)
+### Mise en route sur Vercel (une seule fois)
 
-Prérequis : projet Firebase `ataiau` sur le forfait **Blaze** (obligatoire pour les Cloud Functions
-et les secrets ; l'usage d'un petit site de vitrine reste dans les quotas gratuits), et
-`npm i -g firebase-tools` puis `firebase login`.
-
-1. `cd functions && npm install && cd ..`
-2. Copier `functions/.env.example` en `functions/.env` et renseigner `SMTP_HOST`, `SMTP_PORT`,
-   `SMTP_USER`, `MAIL_TO` (adresse qui reçoit les messages) et `ALLOWED_ORIGINS`.
-3. Enregistrer le mot de passe SMTP comme secret : `firebase functions:secrets:set SMTP_PASS`
-4. Construire et publier : `npm run build` puis `firebase deploy`
-   (ou `firebase deploy --only functions` / `--only hosting` séparément).
+1. Pousser le projet sur GitHub, puis sur vercel.com : **Add New → Project**, choisir le dépôt
+   (Framework : Next.js, réglages par défaut).
+2. **Settings → Environment Variables** : ajouter les variables de `.env.example`
+   (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, et `NEXT_PUBLIC_SITE_URL`
+   avec l'adresse du site). `SMTP_PASS` est un secret : ne jamais le mettre dans le code.
+3. **Redéployer** (Deployments → ⋯ → Redeploy) : les variables ne s'appliquent qu'aux déploiements suivants.
+4. Nom de domaine : **Settings → Domains**, puis mettre à jour `NEXT_PUBLIC_SITE_URL` et redéployer.
 
 Compte d'envoi : idéalement une boîte sur le domaine de l'agence ; avec Gmail, activer la
 validation en deux étapes et créer un « mot de passe d'application » (c'est lui, `SMTP_PASS`).
 
-### Tester sans publier
+### Tester
 
 ```bash
-cd functions && npm test          # 8 tests du gestionnaire, avec un faux serveur SMTP
-npm run build                     # génère out/
-firebase emulators:start --only functions,hosting
+npm test                 # tests du formulaire, avec un faux serveur SMTP
+cp .env.example .env.local   # puis renseigner les valeurs
+npm run dev              # /api/contact fonctionne aussi en local
 ```
-Pour l'émulateur, mettre les valeurs dans `functions/.env.local` et le mot de passe dans
-`functions/.secret.local` (ligne `SMTP_PASS=...`). `npm run dev` seul n'a pas de route `/api/contact`.
 
 ### Dépannage
 
-`firebase functions:log --only contact` : l'erreur SMTP réelle y est journalisée (le visiteur
-ne voit qu'un message générique). Cas fréquents : mot de passe d'application manquant (Gmail),
+Vercel : onglet **Logs** du projet (filtrer « contact ») : l'erreur SMTP réelle y est journalisée
+(le visiteur ne voit qu'un message générique). Cas fréquents : variable d'environnement oubliée ou
+projet non redéployé après l'avoir ajoutée, mot de passe d'application manquant (Gmail),
 port 465/587 inversé, `MAIL_FROM` n'appartenant pas au compte SMTP.
 
 ## Modifier le contenu

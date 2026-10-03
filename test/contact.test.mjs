@@ -1,10 +1,9 @@
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const nodemailer = require("nodemailer");
-const { SMTPServer } = require("smtp-server");
-const { simpleParser } = require("mailparser");
-const { createContactHandler, _resetRateLimit } = require("../contact");
+import test from "node:test";
+import assert from "node:assert/strict";
+import nodemailer from "nodemailer";
+import { SMTPServer } from "smtp-server";
+import { simpleParser } from "mailparser";
+import { handleContact, _resetRateLimit } from "../lib/contact.mjs";
 
 // Faux serveur SMTP local qui garde les messages reçus.
 let server, port;
@@ -29,23 +28,20 @@ const baseCfg = () => ({
   host: "127.0.0.1", port, user: "site@ataia.test", pass: "secret-pass",
   to: "contact@ataia.test", from: "site@ataia.test", allowedOrigins: [],
 });
-const make = (cfg = {}, createTransport) =>
-  createContactHandler({
+const make = (cfg = {}, createTransport) => (request) =>
+  handleContact(request, {
     getConfig: () => ({ ...baseCfg(), ...cfg }),
     createTransport: createTransport || ((o) => nodemailer.createTransport({ host: o.host, port: o.port, secure: false, ignoreTLS: true })),
   });
 
-function call(handler, { method = "POST", body, headers = {} } = {}) {
-  const h = Object.fromEntries(Object.entries(headers).map(([k, v]) => [k.toLowerCase(), v]));
-  return new Promise((resolve) => {
-    const out = { status: 200, headers: {}, json: null };
-    const res = {
-      set: (k, v) => { out.headers[k] = v; return res; },
-      status: (s) => { out.status = s; return res; },
-      json: (j) => { out.json = j; resolve(out); return res; },
-    };
-    handler({ method, body, get: (k) => h[k.toLowerCase()], ip: "1.2.3.4" }, res);
-  });
+async function call(handler, { method = "POST", body, headers = {}, raw } = {}) {
+  const init = { method, headers: { "x-forwarded-for": "1.2.3.4", ...headers } };
+  if (method !== "GET") {
+    init.headers["content-type"] = "application/json";
+    init.body = raw !== undefined ? raw : JSON.stringify(body);
+  }
+  const res = await handler(new Request("https://ataia.test/api/contact", init));
+  return { status: res.status, headers: Object.fromEntries(res.headers), json: await res.json() };
 }
 const valid = { name: "Aïssa Moussa", email: "aissa@example.com", message: "Bonjour,\nJ'ai un projet de villa à Niamey." };
 
@@ -81,7 +77,7 @@ test("refuse les champs manquants, e-mail invalide et textes trop longs", async 
   assert.equal(bad.status, 400);
   assert.equal(bad.json.error, "Adresse e-mail invalide.");
   assert.equal((await call(h, { body: { ...valid, message: "x".repeat(5001) } })).status, 400);
-  assert.equal((await call(h, { body: undefined })).status, 400);
+  assert.equal((await call(h, { raw: "pas du json" })).status, 400);
   assert.equal(inbox.length, 0);
 });
 
@@ -91,17 +87,21 @@ test("accepte sans rien envoyer quand le champ piège est rempli", async () => {
   assert.equal(inbox.length, 0);
 });
 
-test("refuse les méthodes autres que POST", async () => {
-  const r = await call(make(), { method: "GET" });
-  assert.equal(r.status, 405);
-  assert.equal(r.headers.Allow, "POST");
+test("refuse les origines étrangères, accepte la même origine et la liste autorisée", async () => {
+  const h = make({ allowedOrigins: ["https://ataia.com"] });
+  assert.equal((await call(h, { body: valid, headers: { Origin: "https://autre-site.test" } })).status, 403);
+  assert.equal((await call(h, { body: valid, headers: { Origin: "https://ataia.test" } })).status, 200); // même origine
+  assert.equal((await call(h, { body: valid, headers: { Origin: "https://ataia.com" } })).status, 200); // liste ALLOWED_ORIGINS
+  assert.equal((await call(h, { body: valid })).status, 200); // appel sans en-tête Origin
 });
 
-test("filtre les origines quand une liste est configurée", async () => {
-  const h = make({ allowedOrigins: ["https://ataiau.web.app"] });
-  assert.equal((await call(h, { body: valid, headers: { Origin: "https://autre-site.test" } })).status, 403);
-  assert.equal((await call(h, { body: valid, headers: { Origin: "https://ataiau.web.app" } })).status, 200);
-  assert.equal((await call(h, { body: valid })).status, 200); // appel sans en-tête Origin
+test("répond 500 sans envoyer si la configuration SMTP est incomplète", async () => {
+  const orig = console.error; console.error = () => {};
+  try {
+    const r = await call(make({ pass: "" }), { body: valid });
+    assert.equal(r.status, 500);
+    assert.equal(inbox.length, 0);
+  } finally { console.error = orig; }
 });
 
 test("limite à 5 messages par IP sur 10 minutes", async () => {
