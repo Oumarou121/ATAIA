@@ -366,7 +366,52 @@ function GridLayout({ p }) {
   );
 }
 
+/* ---------- Projet 06 : façade en pleine largeur, puis vues d'angle en quinconce ---------- */
+
+function ShowcaseLayout({ p }) {
+  const [c1, c2] = p.chapters;
+  return (
+    <>
+      <div className="bc-head">
+        <Reveal className="bc-head-main">
+          <p className="bc-kicker"><span className="bc-idx">{p.n}</span><span>{p.kicker}</span></p>
+          <h2 className="bc-title bc-title-md">{p.title}</h2>
+        </Reveal>
+        <Reveal className="bc-head-side d1">
+          <p className="bc-desc">{p.desc}</p>
+          <ol className="bc-toc" aria-label="Chapitres du projet">
+            {p.chapters.map((c, i) => (
+              <li key={c.label}>
+                <a href={`#bc-${i + 1}`}><span className="n">{pad(i + 1)}</span>{c.label}<span className="arr" aria-hidden="true">↓</span></a>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+        <Reveal as="dl" className="bc-facts d2">
+          {p.facts.map(([k, v]) => (
+            <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+          ))}
+        </Reveal>
+      </div>
+
+      <Chapter id="bc-1" n={1} c={c1}>
+        <div className="bc-grid bc-full">
+          <Fig p={p} i={0} cls="bc-a" ratio="16/9" sizes="(max-width: 820px) 100vw, 1240px" />
+        </div>
+      </Chapter>
+
+      <Chapter id="bc-2" n={2} c={c2}>
+        <div className="bc-grid bc-step">
+          <Fig p={p} i={1} cls="bc-a" ratio="16/10" sizes="(max-width: 820px) 100vw, 42vw" />
+          <Fig p={p} i={2} cls="bc-b" ratio="16/10" sizes="(max-width: 820px) 100vw, 58vw" />
+        </div>
+      </Chapter>
+    </>
+  );
+}
+
 const LAYOUTS = {
+  showcase: ShowcaseLayout,
   feature: FeatureLayout,
   carousel: CarouselLayout,
   chapters: ChaptersLayout,
@@ -376,12 +421,15 @@ const LAYOUTS = {
   grid: GridLayout,
 };
 
+// Mises en page qui dessinent leur propre en-tête (sans le <ProjectHead> standard)
+const OWN_HEAD = new Set(["compare", "chapters", "feature", "showcase"]);
+
 export default function ProjectSection({ p }) {
   const Layout = LAYOUTS[p.layout];
   const index = PROJECTS.findIndex((x) => x.key === p.key);
   return (
     <section className="proj" id={`project-${p.n}`} data-idx={p.n} aria-label={`Projet ${p.n}`}>
-      {p.layout !== "compare" && p.layout !== "chapters" && p.layout !== "feature" && <ProjectHead p={p} />}
+      {!OWN_HEAD.has(p.layout) && <ProjectHead p={p} />}
       <Layout p={p} />
       <ProjectNav index={index} />
     </section>

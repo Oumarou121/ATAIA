@@ -970,3 +970,11 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
   .team-means{grid-template-columns:repeat(2,minmax(0,1fr))}
   .team-card{min-height:96px}
 }
+
+/* ---- Projet 06 : façade pleine largeur + vues d'angle en quinconce ---- */
+.bc-title-md{font-size:clamp(32px,4.6vw,64px);line-height:1.04}
+.bc-full .bc-fig{grid-column:1 / -1}
+.bc-step{align-items:end}
+.bc-step .bc-a{grid-column:1 / span 5}
+.bc-step .bc-b{grid-column:6 / span 7}
+@media (max-width:820px){.bc-step{align-items:stretch}}
