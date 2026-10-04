@@ -977,4 +977,8 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
 .bc-step{align-items:end}
 .bc-step .bc-a{grid-column:1 / span 5}
 .bc-step .bc-b{grid-column:6 / span 7}
-@media (max-width:820px){.bc-step{align-items:stretch}}
+@media (max-width:820px){
+  .bc-step{align-items:stretch}
+  /* sinon .bc-step .bc-a/.bc-b (déclarés plus bas) écrasent la règle mobile et gardent 5/7 colonnes côte à côte */
+  .bc-step .bc-a,.bc-step .bc-b{grid-column:1 / -1}
+}
