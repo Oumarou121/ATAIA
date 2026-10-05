@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { NAV_LINKS, PROJECTS, SITE } from "@/lib/data";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
@@ -61,7 +62,9 @@ export default function Header() {
     <>
       <header id="hdr" className={solid ? "solid" : ""}>
         <nav aria-label="Navigation principale">
-          <a className="brand" href="#top">{SITE.name}</a>
+          <a className="brand" href="#top" aria-label={`${SITE.name} — retour en haut`}>
+            <Image className="brand-logo" src="/logo/ataia.png" alt="" width={52} height={52} priority />
+          </a>
           <span className="hdr-mid" hidden={!indicator} aria-hidden="true">
             {indicator && `${indicator} / ${String(PROJECTS.length).padStart(2, "0")}`}
           </span>
@@ -85,7 +88,9 @@ export default function Header() {
 
       <div ref={mnav} inert={!menu} className={`mnav${menu ? " open" : ""}`} id="mnav" role="dialog" aria-modal="true" aria-label="Navigation">
         <div className="mnav-top">
-          <span>{SITE.name}</span>
+          <span className="brand">
+            <Image className="brand-logo" src="/logo/ataia.png" alt={SITE.name} width={52} height={52} />
+          </span>
           <button ref={closeBtn} onClick={closeMenu} aria-label="Fermer le menu">Fermer</button>
         </div>
         {NAV_LINKS.map((l) => (

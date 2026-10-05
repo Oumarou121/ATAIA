@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SITE } from "@/lib/data";
 import Reveal from "./Reveal";
 
@@ -6,7 +7,9 @@ export default function Footer() {
     <Reveal as="footer">
       <div className="foot-row">
         <div>
-          <div className="foot-brand">{SITE.name}</div>
+          <div className="foot-brand">
+            <Image className="brand-logo" src="/logo/ataia.png" alt={SITE.name} width={64} height={64} />
+          </div>
           <div className="foot-full">{SITE.fullName}</div>
           <div>{SITE.tagline}</div>
         </div>
