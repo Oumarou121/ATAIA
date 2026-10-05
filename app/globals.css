@@ -539,6 +539,30 @@ nav{display:flex;align-items:center;justify-content:space-between;color:var(--in
 .org-divs>li:last-child .org-card::after{content:'';position:absolute;left:-26px;top:-14px;height:calc(50% + 14px);border-left:1px solid var(--lc)}
 .org-divs .org-name{font-family:var(--font-inter),system-ui,sans-serif;font-size:13.5px;line-height:1.4;color:var(--sub)}
 
+/* relations de coordination (traits en pointillés) */
+.org-divs>li{padding-right:14px}
+.org-divs>li:first-child:not(:last-child)::after,.org-divs>li:nth-child(2)::after{content:'';position:absolute;right:0;width:12px;border-right:1px dashed var(--lc);transition:opacity .9s ease}
+.org-divs>li:first-child:not(:last-child)::after{top:50%;bottom:0;border-top:1px dashed var(--lc)}
+.org-divs>li:nth-child(2)::after{top:-14px;bottom:50%;border-bottom:1px dashed var(--lc)}
+.org-service>.org-card{border-top-color:var(--line)}
+.org-service>.org-card .org-lv{color:var(--muted)}
+@media (min-width:901px){
+  /* service administratif (au centre) relié à chaque direction voisine */
+  .org-dir:not(:last-child)>.org-card::after{content:'';position:absolute;left:100%;top:26px;width:var(--gap-org);border-top:1px dashed var(--lc);transition:opacity .9s ease}
+}
+.rv-on .org-wrap:not(.shown) .org-divs>li:first-child::after,.rv-on .org-wrap:not(.shown) .org-divs>li:nth-child(2)::after,
+.rv-on .org-wrap:not(.shown) .org-dir>.org-card::after{opacity:0}
+.org-rel{margin-top:clamp(28px,5vh,48px);padding-top:20px;border-top:1px solid var(--line)}
+.org-rel-title{font-size:11.5px;font-weight:400;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.org-rel-key{margin-top:10px;font-size:12px;color:var(--muted);display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+.org-rel-key .k-solid,.org-rel-key .k-dash{display:inline-block;width:22px;border-top:1px solid var(--lc)}
+.org-rel-key .k-dash{margin-left:14px;border-top-style:dashed}
+.org-rel ul{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px clamp(20px,3vw,48px)}
+.org-rel li{font-size:13px;line-height:1.5;color:var(--sub)}
+.org-rel li span{color:var(--accent);margin:0 4px}
+@media (max-width:900px){
+  .org-rel ul{grid-template-columns:1fr}
+}
 @media (max-width:900px){
   .org-root{align-items:stretch}
   .org-root>.org-card{width:100%;text-align:left}
@@ -983,4 +1007,23 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
   .bc-step{align-items:stretch}
   /* sinon .bc-step .bc-a/.bc-b (déclarés plus bas) écrasent la règle mobile et gardent 5/7 colonnes côte à côte */
   .bc-step .bc-a,.bc-step .bc-b{grid-column:1 / -1}
+}
+
+/* =========================================================
+   PRÉSENTATION — juste après l'introduction : accroche + deux blocs de prestations
+   ========================================================= */
+.pres{padding:clamp(24px,5vh,56px) var(--pad-x) var(--gap-xl)}
+.pres-head .idx{display:block;font-size:12px;color:var(--sub);margin-bottom:14px}
+.pres-lead{max-width:30em;font-family:var(--font-fraunces),Georgia,serif;font-weight:340;font-size:clamp(22px,2.8vw,36px);line-height:1.35;letter-spacing:-.01em;color:var(--ink)}
+.pres-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(32px,6vw,96px);margin-top:clamp(40px,7vh,80px)}
+.pres-block{border-top:1px solid var(--line);padding-top:22px}
+.pres-kicker{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.pres-kicker b{font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums;margin-right:8px}
+.pres-title{margin-top:14px;font-size:clamp(28px,3.4vw,46px);font-weight:440;line-height:1.05;letter-spacing:-.015em}
+.pres-text{margin-top:18px;max-width:46ch;font-size:14.5px;line-height:1.65;color:var(--sub)}
+.pres-list{list-style:none;margin:18px 0 0;padding:0}
+.pres-list li{position:relative;max-width:52ch;margin-top:9px;padding-left:18px;font-size:14px;line-height:1.55;color:var(--sub)}
+.pres-list li::before{content:'–';position:absolute;left:0;color:var(--accent-soft)}
+@media (max-width:900px){
+  .pres-cols{grid-template-columns:1fr;row-gap:clamp(36px,6vh,56px)}
 }

@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Intro from "@/components/Intro";
+import Presentation from "@/components/Presentation";
 import Explorer from "@/components/Explorer";
 import ProjectIndex from "@/components/ProjectIndex";
 import ProjectSection from "@/components/ProjectSection";
@@ -22,6 +23,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Intro />
+        <Presentation />
         <Explorer />
         <ProjectIndex />
         {PROJECTS.map((p) => (
