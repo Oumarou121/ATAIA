@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Presentation from "@/components/Presentation";
-import ProjectIndex from "@/components/ProjectIndex";
+import ProjectGrid from "@/components/ProjectGrid";
 import ProjectSection from "@/components/ProjectSection";
 import VillasResidences from "@/components/VillasResidences";
 import Agency from "@/components/Agency";
@@ -20,7 +20,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Presentation />
-        <ProjectIndex />
+        <ProjectGrid />
         {PROJECTS.map((p) => (
           <ProjectSection key={p.key} p={p} />
         ))}
