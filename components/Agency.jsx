@@ -2,8 +2,6 @@
 import { AGENCY, SITE, img } from "@/lib/data";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
-import OrgChart from "./OrgChart";
-import Team from "./Team";
 
 function Fig({ n, className, sizes, aspect }) {
   const p = AGENCY.photos[n];
@@ -36,8 +34,6 @@ export default function Agency() {
         <Fig n={2} className="ag-c" sizes="(max-width: 900px) 100vw, 40vw" />
         <Fig n={3} className="ag-d" sizes="(max-width: 900px) 100vw, 48vw" />
       </div>
-      <OrgChart />
-      <Team />
     </section>
   );
 }

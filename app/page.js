@@ -1,14 +1,11 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import Intro from "@/components/Intro";
 import Presentation from "@/components/Presentation";
-import Explorer from "@/components/Explorer";
 import ProjectIndex from "@/components/ProjectIndex";
 import ProjectSection from "@/components/ProjectSection";
 import VillasResidences from "@/components/VillasResidences";
 import Agency from "@/components/Agency";
 import Manifesto from "@/components/Manifesto";
-import Domains from "@/components/Domains";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { LightboxProvider } from "@/components/Lightbox";
@@ -22,9 +19,7 @@ export default function Home() {
       <Header />
       <main id="main">
         <Hero />
-        <Intro />
         <Presentation />
-        <Explorer />
         <ProjectIndex />
         {PROJECTS.map((p) => (
           <ProjectSection key={p.key} p={p} />
@@ -32,7 +27,6 @@ export default function Home() {
         <VillasResidences />
         <Agency />
         <Manifesto />
-        <Domains />
         <Contact />
       </main>
       <Footer />
