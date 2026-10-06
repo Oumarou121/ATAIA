@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CONTACT_IMAGE, img } from "@/lib/data";
 import { Zoomable } from "./Lightbox";
 import Reveal from "./Reveal";
+import WhatsAppButton from "./WhatsAppButton";
 
 export default function Contact() {
   const [status, setStatus] = useState({ state: "idle", msg: "" });
@@ -36,6 +37,7 @@ export default function Contact() {
       <Reveal className="contact-row">
         <div className="ct-left">
           <h2>Parlons de votre prochain projet.</h2>
+          <WhatsAppButton />
         </div>
         <form className="cform" onSubmit={onSubmit}>
           {/* champ piège anti-robots : invisible et ignoré des visiteurs */}

@@ -69,9 +69,10 @@ export default function Header() {
             {indicator && `${indicator} / ${String(PROJECTS.length).padStart(2, "0")}`}
           </span>
           <div className="nlinks">
-            {NAV_LINKS.map((l) => (
+            {NAV_LINKS.filter((l) => l.href !== "#contact").map((l) => (
               <a key={l.href} href={l.href}>{l.label}</a>
             ))}
+            <a className="nav-cta" href="#contact">Contact</a>
           </div>
           <button
             ref={openBtn}

@@ -6,6 +6,7 @@ import Agency from "@/components/Agency";
 import Manifesto from "@/components/Manifesto";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { LightboxProvider } from "@/components/Lightbox";
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <WhatsAppButton variant="float" label="WhatsApp" />
     </LightboxProvider>
   );
 }
