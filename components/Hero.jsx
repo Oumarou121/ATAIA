@@ -31,6 +31,7 @@ export default function Hero() {
                 src={img(pr.slug, pr.main)}
                 sizes="100vw"
                 preload={i === 0}
+                loading={i === 0 ? "eager" : undefined}
                 alt={i === s.index ? `${pr.title}, ${pr.loc}` : ""}
               />
             )}
@@ -50,7 +51,7 @@ export default function Hero() {
           </div>
           <div className="hh-cta">
             <a className="hh-btn" href={`#project-${p.n}`}>Voir le projet <span aria-hidden="true">→</span></a>
-            <a className="hh-link" href="#projects">Tous les projets <span aria-hidden="true">↓</span></a>
+            <a className="hh-link" href="#projects">Toutes les réalisations <span aria-hidden="true">↓</span></a>
           </div>
         </div>
 

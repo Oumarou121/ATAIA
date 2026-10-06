@@ -63,7 +63,7 @@ export default function Header() {
       <header id="hdr" className={solid ? "solid" : ""}>
         <nav aria-label="Navigation principale">
           <a className="brand" href="#top" aria-label={`${SITE.name} — retour en haut`}>
-            <Image className="brand-logo" src="/logo/ataia.png" alt="" width={52} height={52} priority />
+            <Image className="brand-logo" src="/logo/ataia.png" alt="" width={52} height={52} preload loading="eager" />
           </a>
           <span className="hdr-mid" hidden={!indicator} aria-hidden="true">
             {indicator && `${indicator} / ${String(PROJECTS.length).padStart(2, "0")}`}

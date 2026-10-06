@@ -1,94 +1,108 @@
 "use client";
-import { useState } from "react";
-import { PLANS, PROJECTS, RESIDENCES, VILLAS, img, planSub, planTitle } from "@/lib/data";
-import { useLightbox } from "./Lightbox";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PLANS, PROJECTS, RESIDENCES, VILLAS, img, planFacts, planSub, planTitle, projectViews } from "@/lib/data";
 import Photo from "./Photo";
+import ProjectDialog from "./ProjectDialog";
 import Reveal from "./Reveal";
 
 const pad2 = (n) => String(n).padStart(2, "0");
 const views = (n) => `${n} vue${n > 1 ? "s" : ""}`;
 
 /**
- * Toutes les réalisations sous forme de cartes : les 6 projets (lien vers leur section détaillée),
- * puis chaque villa et chaque résidence (ouvre la visionneuse sur ses photos), puis les plans d'urbanisme (PUR et SDAU,
- * affichés en entier sur fond clair et agrandis dans la visionneuse). Données : PROJECTS, VILLAS, RESIDENCES, PLANS.
+ * Toutes les réalisations sous forme de cartes : les 6 projets, puis chaque villa et chaque résidence, puis les plans
+ * d'urbanisme (PUR et SDAU). Un clic ouvre la fiche (ProjectDialog) : toutes les images et les informations disponibles.
+ * Un lien #project-01 (ex. bouton du hero) ouvre directement la fiche du projet. Données : PROJECTS, VILLAS, RESIDENCES, PLANS.
  */
+const villaItem = (g, type, chip) => ({
+  type,
+  id: g.slug,
+  title: g.name,
+  chip,
+  sub: views(g.n),
+  cta: "Voir les photos",
+  src: img(g.slug, 0),
+  dialog: {
+    title: g.name,
+    chip,
+    sub: `${chip} · ${views(g.n)}`,
+    images: Array.from({ length: g.n }, (_, i) => ({ src: img(g.slug, i), cap: `${g.name} — photo ${i + 1}` })),
+  },
+});
+
 const ITEMS = [
   ...PROJECTS.map((p) => ({
-    type: "projects",
+    type: p.domain === "Urbanisme" ? "urbanisme" : "architecture",
     id: p.key,
+    hash: `project-${p.n}`,
     title: p.title,
     chip: p.domain,
     sub: p.loc,
     cta: "Voir le projet",
-    href: `#project-${p.n}`,
     src: img(p.slug, p.main),
+    dialog: {
+      title: p.title,
+      chip: p.kicker,
+      sub: p.loc,
+      desc: p.desc,
+      facts: p.facts ?? p.details,
+      notes: p.chapters?.map(({ label, note }) => ({ label, note })),
+      images: projectViews(p),
+    },
   })),
-  ...VILLAS.map((g) => ({ type: "villas", id: g.slug, title: g.name, chip: "Villa", sub: views(g.n), cta: "Parcourir les vues", g })),
-  ...RESIDENCES.map((g) => ({ type: "residences", id: g.slug, title: g.name, chip: "Résidence", sub: views(g.n), cta: "Parcourir les vues", g })),
+  ...VILLAS.map((g) => villaItem(g, "villas", "Villa")),
+  ...RESIDENCES.map((g) => villaItem(g, "residences", "Résidence")),
   ...PLANS.map((p) => ({
-    type: "plans",
+    type: "urbanisme",
     id: `${p.slug}-${p.i}`,
     title: planTitle(p),
     chip: p.kind,
     sub: planSub(p),
-    cta: "Agrandir la carte",
+    cta: "Voir la carte",
     plan: p,
     src: img(p.slug, p.i),
+    dialog: {
+      title: planTitle(p),
+      chip: p.kind,
+      sub: p.name,
+      desc: p.cap,
+      facts: planFacts(p),
+      images: [{ src: img(p.slug, p.i), cap: p.cap }],
+      plan: true,
+    },
   })),
 ];
 
+// Chaque carte appartient à un seul onglet : le domaine (Architecture, Urbanisme) ou le type d'habitat (Villas, Résidences).
 const FILTERS = [
   { key: "all", label: "Tous" },
-  { key: "projects", label: "Projets" },
+  { key: "architecture", label: "Architecture" },
   { key: "villas", label: "Villas" },
   { key: "residences", label: "Résidences" },
-  { key: "plans", label: "Urbanisme" },
+  { key: "urbanisme", label: "Urbanisme" },
 ];
 const countOf = (k) => (k === "all" ? ITEMS.length : ITEMS.filter((it) => it.type === k).length);
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw";
 
-function Card({ it, n }) {
-  const { open } = useLightbox();
-  const src = it.src ?? img(it.g.slug, 0);
-  const isPlan = it.type === "plans";
-  const inner = (
-    <>
-      <span className="pc-media">
-        <span className={`frame real pc-frame${isPlan ? " is-plan" : ""}`}>
-          <Photo src={src} sizes={SIZES} />
-        </span>
-        <span className="pc-chip">{it.chip}</span>
-      </span>
-      <span className="pc-meta">
-        <span className="pc-n">{pad2(n)}</span>
-        <span className="pc-t">{it.title}</span>
-        <span className="pc-s">{it.sub}</span>
-        <span className="pc-cta">
-          {it.cta} <span aria-hidden="true">→</span>
-        </span>
-      </span>
-    </>
-  );
-
-  if (it.href) {
-    return (
-      <li>
-        <a className="pc-card" href={it.href}>
-          {inner}
-        </a>
-      </li>
-    );
-  }
-
-  const group = isPlan
-    ? [{ src, cap: it.plan.cap }]
-    : Array.from({ length: it.g.n }, (_, i) => ({ src: img(it.g.slug, i), cap: `${it.g.name} — photo ${i + 1}` }));
+function Card({ it, n, onOpen }) {
+  const isPlan = Boolean(it.plan);
   return (
     <li>
-      <button type="button" className="pc-card" onClick={(e) => open(e.currentTarget, group)} aria-haspopup="dialog">
-        {inner}
+      <button type="button" className="pc-card" onClick={(e) => onOpen(it, e.currentTarget)} aria-haspopup="dialog">
+        <span className="pc-media">
+          <span className={`frame real pc-frame${isPlan ? " is-plan" : ""}`}>
+            <Photo src={it.src} sizes={SIZES} />
+          </span>
+          <span className="pc-chip">{it.chip}</span>
+        </span>
+        <span className="pc-meta">
+          <span className="pc-n">{pad2(n)}</span>
+          <span className="pc-t">{it.title}</span>
+          <span className="pc-s">{it.sub}</span>
+          <span className="pc-cta">
+            {it.cta} <span aria-hidden="true">→</span>
+          </span>
+        </span>
       </button>
     </li>
   );
@@ -96,14 +110,43 @@ function Card({ it, n }) {
 
 export default function ProjectGrid() {
   const [filter, setFilter] = useState("all");
+  const [current, setCurrent] = useState(null);
+  const trigger = useRef(null);
+
+  const onOpen = useCallback((it, el) => {
+    trigger.current = el;
+    setCurrent(it);
+    if (it.hash) history.replaceState(null, "", `#${it.hash}`);
+  }, []);
+
+  const onClose = useCallback(() => {
+    setCurrent(null);
+    if (location.hash.startsWith("#project-")) history.replaceState(null, "", "#projects");
+    trigger.current?.focus?.();
+  }, []);
+
+  // lien direct #project-01 : ouvre la fiche du projet
+  useEffect(() => {
+    const sync = () => {
+      const it = ITEMS.find((x) => x.hash && `#${x.hash}` === location.hash);
+      if (it) {
+        trigger.current = null;
+        setCurrent(it);
+      }
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
   const list = filter === "all" ? ITEMS : ITEMS.filter((it) => it.type === filter);
 
   return (
-    <section className="pgrid" id="projects" aria-label="Projets et réalisations">
+    <section className="pgrid" id="projects" aria-label="Nos réalisations">
       <Reveal className="pgrid-head">
         <div>
           <span className="idx">+</span>
-          <h2 className="pgrid-title">Projets</h2>
+          <h2 className="pgrid-title">Nos réalisations</h2>
         </div>
         <p className="pgrid-count" aria-live="polite">
           {pad2(list.length)} réalisation{list.length > 1 ? "s" : ""}
@@ -127,9 +170,11 @@ export default function ProjectGrid() {
 
       <Reveal as="ul" stagger threshold={0.04} className="pgrid-list" key={filter}>
         {list.map((it, k) => (
-          <Card key={it.id} it={it} n={k + 1} />
+          <Card key={it.id} it={it} n={k + 1} onOpen={onOpen} />
         ))}
       </Reveal>
+
+      <ProjectDialog key={current?.id} item={current?.dialog} onClose={onClose} />
     </section>
   );
 }

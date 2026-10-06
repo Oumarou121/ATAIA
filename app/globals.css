@@ -1003,3 +1003,49 @@ footer{padding:40px var(--pad-x) calc(40px + env(safe-area-inset-bottom,0px));fo
   .pres-secs{grid-template-columns:1fr}
   .pres-nav{display:none}
 }
+
+/* =========================================================
+   FICHE D'UNE RÉALISATION (projet, villa, résidence, plan) — images à gauche, informations à droite
+   ========================================================= */
+.pd{position:fixed;inset:0;z-index:110;display:flex;flex-direction:column;background:var(--bg);animation:pdIn .4s var(--ease-out) both}
+@keyframes pdIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pd{animation:none}}
+.pd-bar{flex:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:clamp(12px,2vh,18px) var(--gut);border-bottom:1px solid var(--line)}
+.pd-chip{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.pd-close{font:inherit;font-size:14px;color:var(--ink);background:none;border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;transition:border-color .3s ease,color .3s ease}
+.pd-close:hover{border-color:var(--accent);color:var(--accent)}
+.pd-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,32vw,430px)}
+.pd-media{display:flex;flex-direction:column;min-width:0;min-height:0;padding:clamp(12px,2vw,24px) 0 clamp(12px,2vw,24px) var(--gut)}
+.pd-stage{position:relative;flex:1;min-height:0;border-radius:8px;overflow:hidden;background:#141412;touch-action:pan-y}
+.pd-stage.is-plan{background:#fff}
+.pd-img{object-fit:contain;animation:pdImg .5s ease both}
+@keyframes pdImg{from{opacity:0}to{opacity:1}}
+.pd-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(240,237,229,.35);background:rgba(20,19,15,.55);color:#fff;font-size:17px;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .3s ease,border-color .3s ease}
+.pd-arrow:hover{background:rgba(20,19,15,.85);border-color:var(--accent)}
+.pd-arrow.prev{left:14px}.pd-arrow.next{right:14px}
+.pd-count{position:absolute;left:14px;bottom:12px;padding:4px 10px;border-radius:999px;font-size:12px;color:#fff;background:rgba(20,19,15,.6);font-variant-numeric:tabular-nums}
+.pd-thumbs{flex:none;display:flex;gap:8px;overflow-x:auto;padding:12px 2px 4px;scrollbar-width:thin}
+.pd-th{position:relative;flex:none;width:92px;height:66px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#141412;cursor:pointer;opacity:.55;transition:opacity .3s ease,border-color .3s ease}
+.pd-th:hover{opacity:.9}
+.pd-th.on{opacity:1;border-color:var(--accent)}
+.pd-th>img{object-fit:cover}
+.pd-cap{flex:none;margin-top:10px;font-size:13px;line-height:1.5;color:var(--sub)}
+.pd-info{min-height:0;overflow-y:auto;padding:clamp(18px,3vw,36px) var(--gut) 40px clamp(20px,3vw,40px)}
+.pd-title{font-size:clamp(26px,2.6vw,38px);line-height:1.1;letter-spacing:-.015em;font-weight:440}
+.pd-sub{margin-top:10px;font-size:13.5px;color:var(--sub)}
+.pd-desc{margin-top:18px;font-size:14.5px;line-height:1.65;color:var(--sub)}
+.pd-facts{margin:24px 0 0;border-top:1px solid var(--line)}
+.pd-facts>div{display:grid;grid-template-columns:minmax(0,8.5em) minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.pd-facts dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pd-facts dd{margin:0;font-size:14px;line-height:1.5;color:var(--ink)}
+.pd-notes{list-style:none;margin:22px 0 0;padding:0}
+.pd-notes li{margin-top:14px;font-size:13.5px;line-height:1.6;color:var(--sub)}
+.pd-notes b{display:block;font-family:var(--font-fraunces),Georgia,serif;font-weight:440;font-size:16px;color:var(--ink);margin-bottom:2px}
+.pd-open{display:inline-block;margin-top:26px;font-size:13px;color:var(--accent)}
+.pd-open:hover{text-decoration:underline}
+@media (max-width:900px){
+  .pd-body{display:block;overflow-y:auto}
+  .pd-media{padding:12px var(--gut) 0}
+  .pd-stage{flex:none;height:min(66vw,50vh)}
+  .pd-info{overflow:visible;padding:20px var(--gut) 48px}
+}
