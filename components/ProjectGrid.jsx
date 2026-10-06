@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PROJECTS, RESIDENCES, VILLAS, img } from "@/lib/data";
+import { PLANS, PROJECTS, RESIDENCES, VILLAS, img, planSub, planTitle } from "@/lib/data";
 import { useLightbox } from "./Lightbox";
 import Photo from "./Photo";
 import Reveal from "./Reveal";
@@ -10,7 +10,8 @@ const views = (n) => `${n} vue${n > 1 ? "s" : ""}`;
 
 /**
  * Toutes les réalisations sous forme de cartes : les 6 projets (lien vers leur section détaillée),
- * puis chaque villa et chaque résidence (ouvre la visionneuse sur ses photos). Données : PROJECTS, VILLAS, RESIDENCES.
+ * puis chaque villa et chaque résidence (ouvre la visionneuse sur ses photos), puis les plans d'urbanisme (PUR et SDAU,
+ * affichés en entier sur fond clair et agrandis dans la visionneuse). Données : PROJECTS, VILLAS, RESIDENCES, PLANS.
  */
 const ITEMS = [
   ...PROJECTS.map((p) => ({
@@ -25,6 +26,16 @@ const ITEMS = [
   })),
   ...VILLAS.map((g) => ({ type: "villas", id: g.slug, title: g.name, chip: "Villa", sub: views(g.n), cta: "Parcourir les vues", g })),
   ...RESIDENCES.map((g) => ({ type: "residences", id: g.slug, title: g.name, chip: "Résidence", sub: views(g.n), cta: "Parcourir les vues", g })),
+  ...PLANS.map((p) => ({
+    type: "plans",
+    id: `${p.slug}-${p.i}`,
+    title: planTitle(p),
+    chip: p.kind,
+    sub: planSub(p),
+    cta: "Agrandir la carte",
+    plan: p,
+    src: img(p.slug, p.i),
+  })),
 ];
 
 const FILTERS = [
@@ -32,6 +43,7 @@ const FILTERS = [
   { key: "projects", label: "Projets" },
   { key: "villas", label: "Villas" },
   { key: "residences", label: "Résidences" },
+  { key: "plans", label: "Urbanisme" },
 ];
 const countOf = (k) => (k === "all" ? ITEMS.length : ITEMS.filter((it) => it.type === k).length);
 
@@ -40,10 +52,11 @@ const SIZES = "(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw";
 function Card({ it, n }) {
   const { open } = useLightbox();
   const src = it.src ?? img(it.g.slug, 0);
+  const isPlan = it.type === "plans";
   const inner = (
     <>
       <span className="pc-media">
-        <span className="frame real pc-frame">
+        <span className={`frame real pc-frame${isPlan ? " is-plan" : ""}`}>
           <Photo src={src} sizes={SIZES} />
         </span>
         <span className="pc-chip">{it.chip}</span>
@@ -69,7 +82,9 @@ function Card({ it, n }) {
     );
   }
 
-  const group = Array.from({ length: it.g.n }, (_, i) => ({ src: img(it.g.slug, i), cap: `${it.g.name} — photo ${i + 1}` }));
+  const group = isPlan
+    ? [{ src, cap: it.plan.cap }]
+    : Array.from({ length: it.g.n }, (_, i) => ({ src: img(it.g.slug, i), cap: `${it.g.name} — photo ${i + 1}` }));
   return (
     <li>
       <button type="button" className="pc-card" onClick={(e) => open(e.currentTarget, group)} aria-haspopup="dialog">
