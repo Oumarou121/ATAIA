@@ -51,8 +51,7 @@ export default function Hero() {
           </div>
           <div className="hh-cta">
             <a className="hh-btn hh-btn--solid" href="#contact">Nous contacter</a>
-            <a className="hh-btn" href={`#project-${p.n}`}>Voir le projet <span aria-hidden="true">→</span></a>
-            <a className="hh-link" href="#projects">Toutes les réalisations <span aria-hidden="true">↓</span></a>
+            <a className="hh-link" href={`#project-${p.n}`}>Voir le projet <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
