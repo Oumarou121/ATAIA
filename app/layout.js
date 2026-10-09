@@ -15,8 +15,12 @@ const inter = Inter({
   display: "swap",
 });
 
+
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL("https://ataiau.com"),
+  alternates: {
+    canonical: "/",
+  },
   title: { default: `${SITE.name} — Architecture, urbanisme & ingénierie à Niamey`, template: `%s | ${SITE.name}` },
   description: SITE.description,
   openGraph: {
